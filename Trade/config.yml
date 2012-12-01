@@ -1,0 +1,29 @@
+use-permissions: true
+debug-mode: false
+exchange:
+  use-biggest-interface: true
+  default-rows: 4
+  custom-layout: "default"
+  blacklisted-items: ""
+request:
+  timeout: 10
+  restrictions:
+    max-distance: -1
+    cross-gamemode: false
+    cross-world: false
+    must-see: true
+    ignoring: true
+    right-click: true
+    shift-right-click: true
+    command: true
+    disabled-worlds: {}
+extensions:
+  worldguard:
+    enable: false
+    disabled-regions: {}
+  mobarena:
+    enable: false
+  citizens:
+    enable: false
+  economy:
+    enable: false
