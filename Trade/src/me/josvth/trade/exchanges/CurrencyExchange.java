@@ -36,8 +36,7 @@ public class CurrencyExchange extends ItemExchange{
 
 	}
 
-	// Note that the amount can also be negative
-	public void addCurrency(Player player, int amount) {
+	public void addCurrency( Player player, int amount ) {
 
 		String formatAmount = Matcher.quoteReplacement(economy.format(Math.abs(amount)));
 
@@ -46,100 +45,104 @@ public class CurrencyExchange extends ItemExchange{
 		CurrencyInterface currencyInterface = getInterface( player );
 		CurrencyInterface othersInterface 	= getInterface( other  );
 
-		// Calculate adding or removing
-		boolean adding = amount > 0;
 		// Take absolute value of amount for easier handling
 		amount = Math.abs( amount );
 
-		if ( adding ) {		// Checks if we are adding or subtracting money to the trade
-
-			if(!economy.has(player.getName(), amount)){		// Check if the player has the money he wants to add
-				languageManager.sendMessage(player, "trade.currency.no-balance", new MessageArgument("%amount%", formatAmount));
-				return;
-			}
-
-			// Withdraw money
-			EconomyResponse response = economy.withdrawPlayer( player.getName(), amount );
-
-			// Update interfaces
-			int newAmount = currencyInterface.getCurrency( Side.LEFT ) + amount;
-			currencyInterface.setCurrency( newAmount, Side.LEFT );
-			othersInterface.setCurrency( newAmount , Side.RIGHT );
-
-			// Send messages
-			languageManager.sendMessage(player, "trade.currency.add.self", 
-					new MessageArgument[]{
-					new MessageArgument("%amount%",  formatAmount),
-					new MessageArgument("%balance%", Matcher.quoteReplacement(economy.format(response.balance)))					
-			});
-			languageManager.sendMessage(other, "trade.currency.add.other", 
-					new MessageArgument[]{
-					new MessageArgument("%playername%",player.getName()),
-					new MessageArgument("%amount%", formatAmount)
-			});
-
-			// Just to be sure cancel the accept of the other player
-			super.cancelAcceptOf( other );
-
-		} else {
-
-			// Check if player added enough to the trade to recall
-			if( currencyInterface.getCurrency( Side.LEFT ) < amount ) {
-				languageManager.sendMessage(player, "trade.currency.remove.cant", new MessageArgument("%amount%", formatAmount));
-				return;
-			}
-
-			// Give the player back his money
-			EconomyResponse response = economy.depositPlayer( player.getName(), amount );
-
-			// Update interfaces
-			int newAmount = currencyInterface.getCurrency( Side.LEFT ) - amount;
-			currencyInterface.setCurrency( newAmount, Side.LEFT );
-			othersInterface.setCurrency( newAmount , Side.RIGHT );
-
-			// Send messages
-			languageManager.sendMessage(player, "trade.currency.remove.self", 
-					new MessageArgument[]{
-					new MessageArgument("%amount%", formatAmount),
-					new MessageArgument("%balance%", Matcher.quoteReplacement(economy.format(response.balance)))					
-			});
-			languageManager.sendMessage(other, "trade.currency.remove.other", 
-					new MessageArgument[]{
-					new MessageArgument("%playername%",player.getName()),
-					new MessageArgument("%amount%", formatAmount)
-			});
-
-			// Just to be sure cancel the accept of the other player
-			super.cancelAcceptOf( other );
-
+		if(!economy.has(player.getName(), amount)){		// Check if the player has the money he wants to add
+			languageManager.sendMessage(player, "trade.currency.no-balance", new MessageArgument("%amount%", formatAmount));
+			return;
 		}
+
+		// Withdraw money
+		EconomyResponse response = economy.withdrawPlayer( player.getName(), amount );
+
+		// Update interfaces
+		int newAmount = currencyInterface.getCurrency( Side.LEFT ) + amount;
+		currencyInterface.setCurrency( newAmount, Side.LEFT );
+		othersInterface.setCurrency( newAmount , Side.RIGHT );
+
+		// Send messages
+		languageManager.sendMessage(player, "trade.currency.add.self", 
+				new MessageArgument[]{
+				new MessageArgument("%amount%",  formatAmount),
+				new MessageArgument("%balance%", Matcher.quoteReplacement(economy.format(response.balance)))					
+		});
+		languageManager.sendMessage(other, "trade.currency.add.other", 
+				new MessageArgument[]{
+				new MessageArgument("%playername%",player.getName()),
+				new MessageArgument("%amount%", formatAmount)
+		});
+
+		// Just to be sure cancel the accept of the other player
+		super.cancelAcceptOf( other );
 	}
 
-	@Override
-	public CurrencyInterface getInterface(Player player) {
-		if ( player.equals(p1) ) return p1gui;
-		if ( player.equals(p2) ) return p2gui;
-		return null;
-	}
+	public void removeCurrency( Player player, int amount ) {
 
-	@Override
-	protected void giveOffers() {
+		String formatAmount = Matcher.quoteReplacement(economy.format(Math.abs(amount)));
 
-		// give currency
-		economy.depositPlayer(p1.getName(), p1gui.getCurrency( Side.RIGHT ));		
-		economy.depositPlayer(p2.getName(), p2gui.getCurrency( Side.RIGHT  ));
+		Player other = getOtherPlayer( player );
 
-		super.giveOffers();
-	}
+		CurrencyInterface currencyInterface = getInterface( player );
+		CurrencyInterface othersInterface 	= getInterface( other  );
 
-	@Override
-	protected void revertOffers() {
+		// Check if player added enough to the trade to recall
+		if( currencyInterface.getCurrency( Side.LEFT ) < amount ) {
+			languageManager.sendMessage(player, "trade.currency.remove.cant", new MessageArgument("%amount%", formatAmount));
+			return;
+		}
 
-		// revert currency
-		economy.depositPlayer(p1.getName(), p1gui.getCurrency( Side.LEFT ));		
-		economy.depositPlayer(p2.getName(), p2gui.getCurrency( Side.LEFT  ));
+		// Give the player back his money
+		EconomyResponse response = economy.depositPlayer( player.getName(), amount );
 
-		super.revertOffers();
-	}
+		// Update interfaces
+		int newAmount = currencyInterface.getCurrency( Side.LEFT ) - amount;
+		currencyInterface.setCurrency( newAmount, Side.LEFT );
+		othersInterface.setCurrency( newAmount , Side.RIGHT );
+
+		// Send messages
+		languageManager.sendMessage(player, "trade.currency.remove.self", 
+				new MessageArgument[]{
+				new MessageArgument("%amount%", formatAmount),
+				new MessageArgument("%balance%", Matcher.quoteReplacement(economy.format(response.balance)))					
+		});
+		languageManager.sendMessage(other, "trade.currency.remove.other", 
+				new MessageArgument[]{
+				new MessageArgument("%playername%",player.getName()),
+				new MessageArgument("%amount%", formatAmount)
+		});
+
+		// Just to be sure cancel the accept of the other player
+		super.cancelAcceptOf( other );
+
+}
+
+
+@Override
+public CurrencyInterface getInterface(Player player) {
+	if ( player.equals(p1) ) return p1gui;
+	if ( player.equals(p2) ) return p2gui;
+	return null;
+}
+
+@Override
+protected void giveOffers() {
+
+	// give currency
+	economy.depositPlayer(p1.getName(), p1gui.getCurrency( Side.RIGHT ));		
+	economy.depositPlayer(p2.getName(), p2gui.getCurrency( Side.RIGHT  ));
+
+	super.giveOffers();
+}
+
+@Override
+protected void revertOffers() {
+
+	// revert currency
+	economy.depositPlayer(p1.getName(), p1gui.getCurrency( Side.LEFT ));		
+	economy.depositPlayer(p2.getName(), p2gui.getCurrency( Side.LEFT  ));
+
+	super.revertOffers();
+}
 
 }
