@@ -108,6 +108,12 @@ public class CurrencyInterface extends ItemInterface {
 		for ( int small 	: getLayout().getLeftSmallSlots() 	) if ( small 	== slot ) return getLayout().getSmallCurrency();
 		for ( int medium 	: getLayout().getLeftMediumSlots() 	) if ( medium 	== slot ) return getLayout().getMediumCurrency();
 		for ( int large 	: getLayout().getLeftLargeSlots() 	) if ( large 	== slot ) return getLayout().getLargeCurrency();
-		return -1;
+		
+		for ( int smallD 	: getLayout().getLeftDisplaySmallSlots() 	) if ( smallD 	== slot ) return -1*getLayout().getSmallCurrency();
+		for ( int mediumD 	: getLayout().getLeftDisplayMediumSlots() 	) if ( mediumD 	== slot ) return -1*getLayout().getMediumCurrency();
+		for ( int largeD 	: getLayout().getLeftDisplayLargeSlots() 	) if ( largeD 	== slot ) return -1*getLayout().getLargeCurrency();
+		
+		return 0;
 	}
+	
 }
