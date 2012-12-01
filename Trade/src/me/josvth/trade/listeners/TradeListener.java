@@ -14,6 +14,7 @@ import me.josvth.trade.managers.RequestManager.RequestMethod;
 import me.josvth.trade.managers.RequestManager.RequestRestriction;
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -58,14 +59,14 @@ public class TradeListener implements Listener{
 		if( exchange == null ) return;
 
 		if(event.isShiftClick()){
-			event.setCancelled(true);
+			cancelInventoryClickEvent( event );
 			return;
 		}
 
 		int inventorySlot = event.getRawSlot();
-		
+
 		if ( inventorySlot == -1 ) return; 		// Return if player click outside of the inventory
-		
+
 		// Gets the trading inventory of this player
 		ItemInterface itemInterface = exchange.getInterface( player );
 
@@ -83,15 +84,13 @@ public class TradeListener implements Listener{
 				exchange.denyTrade(player);
 			else
 				exchange.acceptTrade(player);
-			event.setCancelled(true);
+			cancelInventoryClickEvent( event );;
 			return;
 		}
 
 		if (itemInterface.isRefuseSlot(inventorySlot)) {
 			exchange.refuse(player);
-			event.setCursor(cursor);
-			event.setCurrentItem(currentSlot);
-			event.setCancelled(true);
+			cancelInventoryClickEvent( event );
 			return;
 		}
 
@@ -104,14 +103,17 @@ public class TradeListener implements Listener{
 
 			int amount = currencyInterface.getCurrencySlot( inventorySlot );
 
-			if ( amount != -1 ) { 
-				currencyExchange.addCurrency(player, amount);
-				event.setCursor(cursor);
-				event.setCurrentItem(currentSlot);
-				event.setCancelled(true);
+			if ( amount != 0 ) {
+				if ( amount > 0 )
+					if ( event.isRightClick() )
+						currencyExchange.removeCurrency( player, amount );
+					else
+						currencyExchange.addCurrency( player, amount );
+				else
+					currencyExchange.removeCurrency( player, -1 * amount );
+				cancelInventoryClickEvent( event );
 				return;
 			}
-
 		}
 
 		int tradingSlotIndex = itemInterface.getTradeIndex( inventorySlot, Side.LEFT );
@@ -123,20 +125,18 @@ public class TradeListener implements Listener{
 		// Checks if player can use the slot
 		if (tradingSlotIndex == -1) {
 			languageManager.sendMessage(player, "trade.cannot-use-slot");
-			event.setCursor(cursor);
-			event.setCurrentItem(currentSlot);
-			event.setCancelled(true);
+			cancelInventoryClickEvent( event );
 			return;
 		}
 
 		// TODO make this more efficient
-		
+
 		ItemStack newSlot = null;
-		
+
 		// Calculate what is being added and removed
-			
+
 		if ( currentSlot.getTypeId() == 0 && cursor.getTypeId() == 0 ) return;		// nothing changed so return;
-		
+
 		if ( event.isLeftClick() ) {
 			if ( currentSlot.getTypeId() == cursor.getTypeId() ){				// add all items to the stack
 				newSlot = currentSlot.clone();
@@ -172,32 +172,37 @@ public class TradeListener implements Listener{
 			}
 
 		}
-		
+
 		if ( configurationManager.debugMode ) {
 			player.sendMessage("Cursor: " + cursor.toString() );
 			player.sendMessage("CurrentSlot: " + currentSlot.toString() );
 			player.sendMessage("NewSlot: " + newSlot );
 		}
-		
+
 		for ( int black : configurationManager.blacklistedItems ) {
 			if ( black == newSlot.getTypeId() ) {
 				languageManager.sendMessage( player , "cannot-trade-item" );
-				event.setCursor(cursor);
-				event.setCurrentItem(currentSlot);
-				event.setCancelled(true);
+				cancelInventoryClickEvent( event );
 				return;
 			}
 		}
-		
+
 		// Gets the other players trading inventory
 		ItemInterface otherInterface = exchange.getInterface( exchange.getOtherPlayer(player) );
 
 		// Set the item on the right side of the others trading inventory
 		otherInterface.setTradeItem( tradingSlotIndex, newSlot, Side.RIGHT );
-		
+
 		exchange.cancelAcceptOf( exchange.getOtherPlayer( player ) );
 	}
 
+	private void cancelInventoryClickEvent( InventoryClickEvent event ) {
+		event.setCursor( event.getCursor() );
+		event.setCurrentItem( event.getCurrentItem() );
+		event.setCancelled( true );
+		event.setResult( Result.DENY );
+	}
+	
 	@EventHandler
 	public void onRightClickPlayer(PlayerInteractEntityEvent event){
 
@@ -217,7 +222,7 @@ public class TradeListener implements Listener{
 		if ( restriction.equals( RequestRestriction.WAIT ) ) languageManager.sendMessage( requester, "request.please-wait");
 
 		if ( configurationManager.debugMode ) requester.sendMessage( restriction.toString() );
-		
+
 		if ( !restriction.equals( RequestRestriction.ALLOW ) ) return;
 
 		if ( requestManager.isRequested( requester, requested ) ) // checks if this is a response
