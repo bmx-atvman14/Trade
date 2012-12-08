@@ -55,18 +55,18 @@ trade:
     no-balance: "You don't have %amount%!"
   error: "An error occured while trading. Please contact the serveradmin. You items and currency are restored."
   item-label: 
-    accept: "Accept"
-    accepted: "You have accepted the trade. Click to deny."
-    refuse: "Refuse"
-    pending: "Waiting for other to accept."
+    accept: "&aAccept"
+    accepted: "&eYou have accepted the trade. Click to deny."
+    refuse: "&cRefuse"
+    pending: "&7Waiting for other to accept."
     currency:
       change:
-        small: "Left click to add %amount%. Right click to remove %amount%."
-        medium: "Left click to add %amount%. Right click to remove %amount%."
-        large: "Left click to add %amount%. Right click to remove %amount%."
+        small: "&rLeft click to add %amount%. Right click to remove %amount%."
+        medium: "&rLeft click to add %amount%. Right click to remove %amount%."
+        large: "&rLeft click to add %amount%. Right click to remove %amount%."
       display:
-        small: "Click to remove %amount%."
-        medium: "Click to remove %amount%."
-        large: "Click to remove %amount%."
+        small: "&rClick to remove %amount%."
+        medium: "&rClick to remove %amount%."
+        large: "&rClick to remove %amount%."
 global:
   reload: "Yamls reloaded!"  
