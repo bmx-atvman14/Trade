@@ -52,7 +52,6 @@ public class ItemInterface implements InventoryHolder {
 			for ( int i = 0; i < getLayout().getRightSlots().length; i++ )	items[i] = inventory.getItem( getLayout().getRightSlots()[i] );
 			break;
 		}
-		System.out.print(items.length);
 		return items;
 	}
 
