@@ -1,5 +1,7 @@
 package me.josvth.trade.layouts;
 
+import java.util.regex.Matcher;
+
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
@@ -294,9 +296,9 @@ public class CurrencyLayout extends ItemLayout {
 		CraftItemStack largeItem	=	new CraftItemStack( 41 );
 		largeItem.getHandle().c( largeLabel );
 		
-		layout.setSmallItem( smallItem );
-		layout.setMediumItem( mediumItem );
-		layout.setLargeItem( largeItem );
+		layout.setSmallItemDisplay( smallItem );
+		layout.setMediumItemDisplay( mediumItem );
+		layout.setLargeItemDisplay( largeItem );
 		
 	}
 	
@@ -320,15 +322,15 @@ public class CurrencyLayout extends ItemLayout {
 		setCurrencySlots( layout );
 		setCurrencyAmounts( layout );
 		
-		String smallLabel 	= _("trade.item-label.currency.change.small", new String[][] { { "%amount%", economy.format( layout.getSmallCurrency() ) } });
-		String mediumLabel 	= _("trade.item-label.currency.change.medium", new String[][] { { "%amount%", economy.format( layout.getMediumCurrency() ) } });
-		String largeLabel 	= _("trade.item-label.currency.change.large", new String[][] { { "%amount%", economy.format( layout.getLargeCurrency() ) } });
+		String smallLabel 	= _("trade.item-label.currency.change.small", new String[][] { { "%amount%", Matcher.quoteReplacement(economy.format( layout.getSmallCurrency() ) ) } });
+		String mediumLabel 	= _("trade.item-label.currency.change.medium", new String[][] { { "%amount%", Matcher.quoteReplacement(economy.format( layout.getMediumCurrency() ) ) } });
+		String largeLabel 	= _("trade.item-label.currency.change.large", new String[][] { { "%amount%", Matcher.quoteReplacement(economy.format( layout.getLargeCurrency() ) ) } });
 		
 		setCurrencyItems( layout, smallLabel, mediumLabel, largeLabel );
 		
-		String smallLabelDisplay 	= _("trade.item-label.currency.display.small", new String[][] { { "%amount%", economy.format( layout.getSmallCurrency() ) } });
-		String mediumLabelDisplay 	= _("trade.item-label.currency.display.medium", new String[][] { { "%amount%", economy.format( layout.getMediumCurrency() ) } });
-		String largeLabelDisplay 	= _("trade.item-label.currency.display.large", new String[][] { { "%amount%", economy.format( layout.getLargeCurrency() ) } });
+		String smallLabelDisplay 	= _("trade.item-label.currency.display.small", new String[][] { { "%amount%", Matcher.quoteReplacement(economy.format( layout.getSmallCurrency() ) ) } });
+		String mediumLabelDisplay 	= _("trade.item-label.currency.display.medium", new String[][] { { "%amount%", Matcher.quoteReplacement(economy.format( layout.getMediumCurrency() ) ) } });
+		String largeLabelDisplay 	= _("trade.item-label.currency.display.large", new String[][] { { "%amount%", Matcher.quoteReplacement(economy.format( layout.getLargeCurrency() ) ) } });
 		
 		setCurrencyDisplayItems( layout, smallLabelDisplay, mediumLabelDisplay, largeLabelDisplay );
 		
