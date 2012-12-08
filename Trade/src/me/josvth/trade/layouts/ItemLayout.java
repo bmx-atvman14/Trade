@@ -1,7 +1,10 @@
 package me.josvth.trade.layouts;
 
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
+import static me.josvth.trade.managers.LanguageManager._;
 
 public class ItemLayout {
 
@@ -16,10 +19,11 @@ public class ItemLayout {
 
 	// Items
 	ItemStack acceptItem;
+	ItemStack acceptedItem;
 	ItemStack refuseItem;
 	ItemStack pendingItem;
 	ItemStack seperatorItem;
-
+	
 	private int rows;
 		
 	public int getSize() {
@@ -75,6 +79,10 @@ public class ItemLayout {
 	public ItemStack getAcceptItem() {
 		return acceptItem;
 	}
+	
+	public ItemStack getAcceptedItem() {
+		return acceptedItem;
+	}
 
 	public ItemStack getRefuseItem() {
 		return refuseItem;
@@ -115,10 +123,15 @@ public class ItemLayout {
 	}
 
 	// Items
-	public void setAcceptItem(ItemStack acceptItem) {
+	public void setAcceptItem( ItemStack acceptItem ) {
 		this.acceptItem = acceptItem;
 	}
+	
 
+	public void setAcceptedItem( ItemStack acceptedItem ) {
+		this.acceptedItem = acceptedItem;
+	}
+	
 	public void setRefuseItem(ItemStack refuseItem) {
 		this.refuseItem = refuseItem;
 	}
@@ -131,6 +144,18 @@ public class ItemLayout {
 		this.seperatorItem = seperatorItem;
 	}
 
+	public ItemLayout clone() {
+		ItemLayout clone = new ItemLayout();
+		clone.setRows( getRows() );
+		clone.setAcceptItem( getAcceptedItem() );
+		clone.setAcceptedItem( getAcceptedItem() );
+		clone.setRefuseItem( getRefuseItem() );
+		clone.setSeperatorItem( getSeperatorItem() );
+		clone.setLeftSlots( getLeftSlots() );
+		clone.setRightSlots( getRightSlots() );
+		return clone;
+	}
+	
 	protected static void setActionSlots( ItemLayout layout ){
 		
 		layout.setAcceptSlots( new int[]{3} );
@@ -177,11 +202,27 @@ public class ItemLayout {
 	}
 	
 	protected static void setActionItems( ItemLayout layout ) {
-		layout.setAcceptItem( new ItemStack(35, 0, (short) 5) 	);
-		layout.setRefuseItem( new ItemStack(35, 0, (short) 14)	);
-		layout.setPendingItem( new ItemStack(35, 0, (short) 8) 	);
-		layout.setSeperatorItem( new ItemStack(280, 0) 			);
-		// TODO Add item names if API is added;
+		
+		CraftItemStack acceptItem 		= new CraftItemStack( 35, 0, (short) 5  );
+		acceptItem.getHandle().c( _( "trade.item-label.accept" ) );
+		
+		CraftItemStack acceptedItem 	= new CraftItemStack( 35, 0, (short) 4  );
+		acceptedItem.getHandle().c( _( "trade.item-label.accepted" ) );
+		
+		CraftItemStack refuseItem 		= new CraftItemStack( 35, 0, (short) 14 );
+		refuseItem.getHandle().c( _( "trade.item-label.refuse" ) );
+		
+		CraftItemStack pendingItem 		= new CraftItemStack( 35, 0, (short) 8  );
+		pendingItem.getHandle().c( _( "trade.item-label.pending" ) );
+		
+		CraftItemStack seperatorItem	= new CraftItemStack( 280, 0 );
+		
+		layout.setAcceptItem( acceptItem 	);
+		layout.setAcceptedItem( acceptedItem );
+		layout.setRefuseItem( refuseItem	);
+		layout.setPendingItem( pendingItem 	);
+		layout.setSeperatorItem( seperatorItem );
+
 	}
 
 	public static ItemLayout createDefaultLayout( int rows ) {
