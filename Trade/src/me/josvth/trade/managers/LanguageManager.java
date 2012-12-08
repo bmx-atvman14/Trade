@@ -1,113 +1,108 @@
 package me.josvth.trade.managers;
 
 import java.io.File;
-
-
-import me.josvth.trade.Trade;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-
 public class LanguageManager {
 
-	Trade plugin;
+	private static LanguageManager instance = new LanguageManager();
 
-	File languageFile;
-	FileConfiguration languageYaml;
+	Logger logger;
+	
+	File file;
+	FileConfiguration yaml = new YamlConfiguration();
 
-	public LanguageManager(Trade instance) {
-		plugin = instance;
+	private LanguageManager() {
+		logger = Logger.getLogger("(LM)", "Trade");
 	}
-
-	public void initialize() {
-		setupLanguageFile();
-		loadLanguageYaml();
+	
+	public static LanguageManager getInstance() {
+		return instance;
+	}
+	
+	public void setLanguageFile( File file ) {
+		this.file = file;
+	}
+	
+	public void setDefaults( InputStream defaults ) {
+		yaml.setDefaults( YamlConfiguration.loadConfiguration( defaults ) );
 	}
 	
 	public void reload() {
-		initialize();
+		if ( !file.exists() )
+			saveYaml();
+		else
+			loadYaml();
 	}
 	
-	private void setupLanguageFile() {
-		languageFile = new File(plugin.getDataFolder(), "language.yml");
-		if (!(languageFile.exists())) plugin.saveResource("language.yml", false);
+	private void saveYaml() {
+		try {
+			file.getParentFile().mkdirs();
+			file.createNewFile();
+			yaml.save( file );
+		} catch ( IOException e ) {
+			logger.log(Level.WARNING, "Could not save language file!", e);
+		}
 	}
 
-	private void loadLanguageYaml() {
-		languageYaml = new YamlConfiguration();
+	private void loadYaml() {
 		try{
-			languageYaml.load(languageFile);
+			yaml.load(file);
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 	}
 
+	public String getMessage(String path) {
+		return yaml.getString( path );
+	}
+
+	public static String _( String path ) {
+		String message = getInstance().getMessage( path );
+		if ( message == null ) return null;
+		message = ChatColor.translateAlternateColorCodes('&', message);
+		return message;
+	}
+	
+	public static String _( String path, String[][] arguments ) {
+		String message = getInstance().getMessage( path );
+		if ( message == null ) return null;
+		message = ChatColor.translateAlternateColorCodes('&', message);
+		for( int i = 0; i < arguments.length; i++ ) message = message.replaceAll(arguments[i][0], arguments[i][1]);
+		return message;
+	}
+	
+	public static void _s( CommandSender reciever, String path ) {
+		reciever.sendMessage( _( path ) );
+	}
+	
+	public static void _s( CommandSender reciever, String path, String[][] arguments ) {
+		reciever.sendMessage( _( path, arguments ) );
+	}
+	
+	@Deprecated
 	public void sendMessage(CommandSender reciever, String path) {
-		String message = languageYaml.getString(path);
+		String message = yaml.getString(path);
 		if(message == null) return;
 		message = ChatColor.translateAlternateColorCodes('&', message);
 		reciever.sendMessage(message);
 	}
-
-	public void sendMessage(CommandSender reciever, Message message){
-		sendMessage(reciever, message.path, message.args);
-	}
-
+	
+	@Deprecated
 	public void sendMessage( CommandSender reciever, String path, String[][] arguments ){
-		String message = languageYaml.getString( path );
+		String message = yaml.getString( path );
 		if(message == null) return;
 		message = ChatColor.translateAlternateColorCodes('&', message);
 		for( int i = 0; i < arguments.length; i++ ) message = message.replaceAll(arguments[i][0], arguments[i][1]);
 		reciever.sendMessage( message );
 	}
 	
-	public void sendMessage(CommandSender reciever, String path, MessageArgument argument) {
-		String message = languageYaml.getString(path);
-		if(message == null) return;
-		message = ChatColor.translateAlternateColorCodes('&', message);
-		message = message.replaceAll(argument.variable, argument.value);
-		reciever.sendMessage(message);
-	}
-
-	public void sendMessage(CommandSender reciever, String path, MessageArgument[] args) {
-		String message = languageYaml.getString(path);
-		if(message == null) return;
-		message = ChatColor.translateAlternateColorCodes('&', message);
-		for(MessageArgument argument : args){
-			message = message.replaceAll(argument.variable, argument.value);
-		}
-		reciever.sendMessage(message);
-	}
-
-	public static class MessageArgument{
-		public final String variable;
-		public final String value;
-		public MessageArgument(String variable, String value){
-			this.variable = variable;
-			this.value = value;
-		}
-	}
-
-	public static class Message{
-		public final String path;
-		public final MessageArgument[] args;
-
-		public Message(String path){
-			this.path = path;
-			this.args = new MessageArgument[0];
-		}
-
-		public Message(String path, MessageArgument[] args){
-			this.path = path;
-			this.args = args;
-		}
-
-		public Message(String path, MessageArgument arg) {
-			this.path = path;
-			this.args = new MessageArgument[]{arg};
-		}
-	}
 }
