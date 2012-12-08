@@ -1,4 +1,4 @@
-default:
+template-default:
   type: "ITEM"
   slots:
     action:
@@ -15,15 +15,97 @@ default:
         type: 35
         amount: 1
         data: 5
+        label: "Accept"
+      accepted:
+        type: 35
+        amount: 1
+        data: 5
+        label: "You have accepted the trade. Click to deny."
       refuse:
         type: 35
         amount: 1
         data: 14
+        label: "Refuse"
       pending:
         type: 35
         amount: 1
         data: 8
-      seperator:
+        label: "Waiting for other to accept."
+      separator:
         type: 280
         amount: 1
         data: 0
+        label: ""
+template-currency:
+  type: "CURRENCY"
+  slots:
+    action:
+      accept: 3
+      refuse: 4
+      status: 5
+    seperation: 13, 22, 31, 40, 49
+    trade:
+      left: 9,10,11,12,18,19,20,21,27,28,29,30,36,37,38,39
+      right: 14,15,16,17,23,24,25,26,32,33,34,35,41,42,43,44,50
+    
+  items:
+    action:
+      accept:
+        type: 35
+        amount: 1
+        data: 5
+        label: "Accept"
+      accepted:
+        type: 35
+        amount: 1
+        data: 5
+        label: "You have accepted the trade. Click to deny."
+      refuse:
+        type: 35
+        amount: 1
+        data: 14
+        label: "Refuse"
+      pending:
+        type: 35
+        amount: 1
+        data: 8
+        label: "Waiting for other to accept."
+      separator:
+        type: 280
+        amount: 1
+        data: 0
+        label: ""
+    currency:
+      change:
+        small:
+          id: 371
+          amount: 1
+          data: 0
+          label: "Left click to add 1 dollar. Right click to remove 1 dollar."
+        medium:
+          id: 266
+          amount: 1 
+          data: 0
+          label: "Left click to add 10 dollars. Right click to remove 10 dollars."
+        large:
+          id: 41
+          amount: 1
+          data: 0
+          label: "Left click to add 50 dollars. Right click to remove 50 dollars."
+      display:
+        small:
+          id: 371
+          amount: 1
+          data: 0
+          label: "Click to remove 1 dollar."
+        medium:
+          id: 266
+          amount: 1 
+          data: 0
+          label: "Click to remove 10 dollars."
+        large:
+          id: 41
+          amount: 1
+          data: 0
+          label: "Click to remove 50 dollars."
+      
