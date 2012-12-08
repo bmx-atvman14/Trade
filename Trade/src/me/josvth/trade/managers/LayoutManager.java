@@ -68,6 +68,7 @@ public class LayoutManager {
 			if ( configurationManager.debugMode ) plugin.getLogger().info("Loading defaults in layouts.yml");
 			loadDefaults();
 			layouts.set("version", plugin.getDescription().getVersion());
+			layouts.set("default", null);	// Cleanup for previous versions
 			layouts.options().header("The default and default-currency layouts are just templates! Feel free to change them.");
 			save();
 		}
