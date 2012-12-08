@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -14,15 +15,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 public class LanguageManager {
 
 	private static LanguageManager instance = new LanguageManager();
-
-	Logger logger;
 	
 	File file;
 	FileConfiguration yaml = new YamlConfiguration();
-
-	private LanguageManager() {
-		logger = Logger.getLogger("(LM)", "Trade");
-	}
 	
 	public static LanguageManager getInstance() {
 		return instance;
@@ -49,7 +44,7 @@ public class LanguageManager {
 			file.createNewFile();
 			yaml.save( file );
 		} catch ( IOException e ) {
-			logger.log(Level.WARNING, "Could not save language file!", e);
+			Bukkit.getLogger().log(Level.WARNING, "Could not save language file!", e);
 		}
 	}
 
