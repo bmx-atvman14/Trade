@@ -1,5 +1,6 @@
 package me.josvth.trade;
 
+import java.io.File;
 import java.util.logging.Logger;
 
 import me.josvth.trade.listeners.TradeListener;
@@ -33,15 +34,20 @@ public class Trade extends JavaPlugin{
 		
 		configurationManager 	= new ConfigurationManager( this );
 		layoutManager			= new LayoutManager( this );
-		languageManager			= new LanguageManager( this );
+		languageManager			= LanguageManager.getInstance();
 		requestManager			= new RequestManager( this );
 		extensionManager		= new ExtensionManager( this );
 		commandManager			= new CommandManager( this );
 		
 		configurationManager.initalize();
+		
 		requestManager.initalize();
+		
 		layoutManager.initalize();
-		languageManager.initialize();
+		
+		languageManager.setLanguageFile( new File( getDataFolder(), "language.yml" ) );
+		languageManager.setDefaults( getResource( "language.yml") );
+		
 		extensionManager.initialize();
 						
 		tradeListener = new TradeListener(this);
