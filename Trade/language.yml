@@ -64,9 +64,9 @@ trade:
         small: "Left click to add %amount%. Right click to remove %amount%."
         medium: "Left click to add %amount%. Right click to remove %amount%."
         large: "Left click to add %amount%. Right click to remove %amount%."
-      add:
-        small: "Click to remove %amount."
-        medium: "Click to remove %amount."
-        large: "Click to remove %amount."
+      display:
+        small: "Click to remove %amount%."
+        medium: "Click to remove %amount%."
+        large: "Click to remove %amount%."
 global:
   reload: "Yamls reloaded!"  
