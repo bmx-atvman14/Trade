@@ -53,6 +53,20 @@ trade:
       other: "%playername% removed %amount% from the trade!"
       cant: "You cannot remove %amount% from the trade!"
     no-balance: "You don't have %amount%!"
-  error: "An error occured while trading. Please contact the serveradmin. You items and currency are restored." 
+  error: "An error occured while trading. Please contact the serveradmin. You items and currency are restored."
+  item-label: 
+    accept: "Accept"
+    accepted: "You have accepted the trade. Click to deny."
+    refuse: "Refuse"
+    pending: "Waiting for other to accept."
+    currency:
+      change:
+        small: "Left click to add %amount%. Right click to remove %amount%."
+        medium: "Left click to add %amount%. Right click to remove %amount%."
+        large: "Left click to add %amount%. Right click to remove %amount%."
+      add:
+        small: "Click to remove %amount."
+        medium: "Click to remove %amount."
+        large: "Click to remove %amount."
 global:
   reload: "Yamls reloaded!"  
