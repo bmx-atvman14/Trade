@@ -27,7 +27,7 @@ public class ItemInterface implements InventoryHolder {
 	}
 
 	public void accept(){
-		for ( int slot : getLayout().getAcceptSlots() ) inventory.setItem(slot, getLayout().getPendingItem());
+		for ( int slot : getLayout().getAcceptSlots() ) inventory.setItem(slot, getLayout().getAcceptedItem());
 	}
 
 	public void deny(){
