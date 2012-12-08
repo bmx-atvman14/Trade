@@ -34,13 +34,13 @@ public class CurrencyInterface extends ItemInterface {
 		int medium 	= 	(int) 	Math.floor( ( amount - getLayout().getLargeCurrency() * large ) / getLayout().getMediumCurrency() );
 		int small 	= 	(int) 	Math.floor( ( amount - getLayout().getLargeCurrency() * large - getLayout().getMediumCurrency() * medium ) ) / getLayout().getSmallCurrency();
 
-		ItemStack largeItem = getLayout().getLargeItem();
+		ItemStack largeItem = getLayout().getLargeItemDisplay();
 		largeItem.setAmount( large );
 
-		ItemStack mediumItem = getLayout().getMediumItem();
+		ItemStack mediumItem = getLayout().getMediumItemDisplay();
 		mediumItem.setAmount( medium );
 
-		ItemStack smallItem = getLayout().getSmallItem();
+		ItemStack smallItem = getLayout().getSmallItemDisplay();
 		smallItem.setAmount( small );
 
 		
