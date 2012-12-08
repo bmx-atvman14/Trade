@@ -1,7 +1,6 @@
 package me.josvth.trade.managers;
 
 import me.josvth.trade.Trade;
-import me.josvth.trade.managers.LanguageManager.MessageArgument;
 import me.josvth.trade.managers.RequestManager.RequestMethod;
 import me.josvth.trade.managers.RequestManager.RequestRestriction;
 
@@ -79,7 +78,7 @@ public class CommandManager implements CommandExecutor {
 
 			Player requested = plugin.getServer().getPlayer(args[0]);
 			if(requested == null){
-				languageManager.sendMessage( player, "request.player-not-found", new MessageArgument("%playername%", args[0]));
+				languageManager.sendMessage( player, "request.player-not-found", new String[][]{ {"%playername%", args[0]} });
 				return true;
 			}
 
@@ -154,7 +153,7 @@ public class CommandManager implements CommandExecutor {
 				Player requester = plugin.getServer().getPlayer(args[1]);
 				
 				if(requester == null){
-					languageManager.sendMessage( player, "request.player-not-found", new MessageArgument("%playername%", args[0]));
+					languageManager.sendMessage( player, "request.player-not-found", new String[][]{ {"%playername%", args[0]} });
 					return true;
 				}
 				
@@ -225,7 +224,7 @@ public class CommandManager implements CommandExecutor {
 				Player requester = plugin.getServer().getPlayer(args[1]);
 				
 				if(requester == null){
-					languageManager.sendMessage( player, "request.player-not-found", new MessageArgument("%playername%", args[0]));
+					languageManager.sendMessage( player, "request.player-not-found", new String[][]{ {"%playername%", args[0]} });
 					return true;
 				}
 				

@@ -67,6 +67,9 @@ public class TradeListener implements Listener{
 
 		if ( inventorySlot == -1 ) return; 		// Return if player click outside of the inventory
 
+		// Get other player
+		Player other = exchange.getOtherPlayer( player );
+		
 		// Gets the trading inventory of this player
 		ItemInterface itemInterface = exchange.getInterface( player );
 
@@ -80,11 +83,13 @@ public class TradeListener implements Listener{
 		ItemStack currentSlot = event.getCurrentItem();
 
 		if (itemInterface.isAcceptSlot(inventorySlot)) {
-			if ( exchange.hasAccepted(player) )
+			if ( exchange.hasAccepted(player) ){
 				exchange.denyTrade(player);
-			else
+				languageManager.sendMessage( player, "trade.deny.self");
+				languageManager.sendMessage( other, "trade.deny.other", new String[][]{ {"%playername%", player.getName()} } );
+			} else
 				exchange.acceptTrade(player);
-			cancelInventoryClickEvent( event );;
+			cancelInventoryClickEvent( event );
 			return;
 		}
 
@@ -194,6 +199,10 @@ public class TradeListener implements Listener{
 		otherInterface.setTradeItem( tradingSlotIndex, newSlot, Side.RIGHT );
 
 		exchange.cancelAcceptOf( exchange.getOtherPlayer( player ) );
+		languageManager.sendMessage( exchange.getOtherPlayer( player ), "trade.offer-changed", new String[][]{ {"%playername%", player.getName()} });
+
+		exchange.denyTrade( player );
+		
 	}
 
 	private void cancelInventoryClickEvent( InventoryClickEvent event ) {

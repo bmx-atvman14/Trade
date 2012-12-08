@@ -6,7 +6,6 @@ import me.josvth.trade.exchangeinterfaces.ItemInterface.Side;
 import me.josvth.trade.layouts.ItemLayout;
 import me.josvth.trade.managers.ConfigurationManager;
 import me.josvth.trade.managers.LanguageManager;
-import me.josvth.trade.managers.LanguageManager.MessageArgument;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -93,7 +92,7 @@ public class ItemExchange {
 		} else return;
 		
 		languageManager.sendMessage( who, "trade.accept.self" );
-		languageManager.sendMessage( getOtherPlayer(who), "trade.accept.other", new MessageArgument("%playername%", who.getName()));
+		languageManager.sendMessage( getOtherPlayer(who), "trade.accept.other", new String[][]{ {"%playername%", who.getName()} });
 				
 		if(p1acc && p2acc) finish();
 		
@@ -109,9 +108,6 @@ public class ItemExchange {
 			getInterface( p1 ).deny();
 			getInterface( p2 ).denyOther();
 			
-			languageManager.sendMessage(who, "trade.deny.self");
-			languageManager.sendMessage(p2, "trade.deny.other", new MessageArgument("%playername%", who.getName()));
-			
 			return;
 		}
 		
@@ -123,13 +119,11 @@ public class ItemExchange {
 			getInterface( p2 ).deny();
 			getInterface( p1 ).denyOther();
 			
-			languageManager.sendMessage(who, "trade.deny.self");
-			languageManager.sendMessage(p1, "trade.deny.other", new MessageArgument("%playername%", who.getName()));
-			
 			return;
 		}
 	
 	}
+
 
 	public void cancelAcceptOf(Player player) {
 		
@@ -140,9 +134,7 @@ public class ItemExchange {
 			// Change gui accept states
 			getInterface( p1 ).deny();
 			getInterface( p2 ).denyOther();
-			
-			languageManager.sendMessage(p1, "trade.offer-changed", new MessageArgument("%playername%", p2.getName()));
-			
+					
 			return;
 		}
 		
@@ -153,9 +145,7 @@ public class ItemExchange {
 			// Change gui accept states
 			getInterface( p2 ).deny();
 			getInterface( p1 ).denyOther();
-			
-			languageManager.sendMessage(p2, "trade.offer-changed", new MessageArgument("%playername%", p1.getName()));
-			
+						
 			return;
 		}
 		
@@ -164,7 +154,7 @@ public class ItemExchange {
 	public void refuse(Player player) {
 		
 		languageManager.sendMessage(player, "trade.refuse.self");
-		languageManager.sendMessage(getOtherPlayer(player),"trade.refuse.other", new MessageArgument("%playername%", player.getName()));
+		languageManager.sendMessage(getOtherPlayer(player),"trade.refuse.other", new String[][]{ {"%playername%", player.getName()} });
 		
 		stop();
 	}
@@ -198,8 +188,8 @@ public class ItemExchange {
 		p1.openInventory( getInterface( p1 ).getInventory() );
 		p2.openInventory( getInterface( p2 ).getInventory() );
 		
-		languageManager.sendMessage(p1, "trade.start", new MessageArgument("%playername%", p2.getName()));
-		languageManager.sendMessage(p2, "trade.start", new MessageArgument("%playername%", p1.getName()));
+		languageManager.sendMessage(p1, "trade.start", new String[][]{ {"%playername%", p2.getName()} });
+		languageManager.sendMessage(p2, "trade.start", new String[][]{ {"%playername%", p1.getName()} });
 		languageManager.sendMessage(p1, "trade.help");
 		languageManager.sendMessage(p2, "trade.help");
 		
