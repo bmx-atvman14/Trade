@@ -1,6 +1,5 @@
 package me.josvth.trade.listeners;
 
-
 import me.josvth.trade.Trade;
 import me.josvth.trade.exchangeinterfaces.CurrencyInterface;
 import me.josvth.trade.exchangeinterfaces.ItemInterface;
@@ -12,6 +11,7 @@ import me.josvth.trade.managers.LanguageManager;
 import me.josvth.trade.managers.RequestManager;
 import me.josvth.trade.managers.RequestManager.RequestMethod;
 import me.josvth.trade.managers.RequestManager.RequestRestriction;
+import static me.josvth.trade.managers.LanguageManager._s;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event.Result;
@@ -53,7 +53,7 @@ public class TradeListener implements Listener{
 	public void onTradeInventoryClick(InventoryClickEvent event){
 
 		Player player = (Player)event.getWhoClicked();
-
+			
 		ItemExchange exchange = requestManager.getActiveExchanges().get( player );
 
 		if( exchange == null ) return;
@@ -67,6 +67,9 @@ public class TradeListener implements Listener{
 
 		if ( inventorySlot == -1 ) return; 		// Return if player click outside of the inventory
 
+		if ( configurationManager.debugMode )
+			player.sendMessage("IS: " + inventorySlot);
+		
 		// Get other player
 		Player other = exchange.getOtherPlayer( player );
 		
@@ -85,8 +88,8 @@ public class TradeListener implements Listener{
 		if (itemInterface.isAcceptSlot(inventorySlot)) {
 			if ( exchange.hasAccepted(player) ){
 				exchange.denyTrade(player);
-				languageManager.sendMessage( player, "trade.deny.self");
-				languageManager.sendMessage( other, "trade.deny.other", new String[][]{ {"%playername%", player.getName()} } );
+				_s( player, "trade.deny.self");
+				_s( other, "trade.deny.other", new String[][]{ {"%playername%", player.getName()} } );
 			} else
 				exchange.acceptTrade(player);
 			cancelInventoryClickEvent( event );
@@ -107,7 +110,7 @@ public class TradeListener implements Listener{
 			CurrencyInterface currencyInterface = (CurrencyInterface) itemInterface;
 
 			int amount = currencyInterface.getCurrencySlot( inventorySlot );
-
+		
 			if ( amount != 0 ) {
 				if ( amount > 0 )
 					if ( event.isRightClick() )
@@ -129,7 +132,7 @@ public class TradeListener implements Listener{
 
 		// Checks if player can use the slot
 		if (tradingSlotIndex == -1) {
-			languageManager.sendMessage(player, "trade.cannot-use-slot");
+			_s(player, "trade.cannot-use-slot");
 			cancelInventoryClickEvent( event );
 			return;
 		}
@@ -186,7 +189,7 @@ public class TradeListener implements Listener{
 
 		for ( int black : configurationManager.blacklistedItems ) {
 			if ( black == newSlot.getTypeId() ) {
-				languageManager.sendMessage( player , "cannot-trade-item" );
+				_s( player , "cannot-trade-item" );
 				cancelInventoryClickEvent( event );
 				return;
 			}
@@ -199,7 +202,7 @@ public class TradeListener implements Listener{
 		otherInterface.setTradeItem( tradingSlotIndex, newSlot, Side.RIGHT );
 
 		exchange.cancelAcceptOf( exchange.getOtherPlayer( player ) );
-		languageManager.sendMessage( exchange.getOtherPlayer( player ), "trade.offer-changed", new String[][]{ {"%playername%", player.getName()} });
+		_s( exchange.getOtherPlayer( player ), "trade.offer-changed", new String[][]{ {"%playername%", player.getName()} });
 
 		exchange.denyTrade( player );
 		
@@ -224,11 +227,11 @@ public class TradeListener implements Listener{
 
 		RequestRestriction restriction = requestManager.mayRequest( requester, requested, sneaking? RequestMethod.SHIFT_RIGHT_CLICK : RequestMethod.RIGHT_CLICK );
 
-		if ( restriction.equals( RequestRestriction.IN_TRADE ) ) languageManager.sendMessage( requester, "request.in-trade");			
+		if ( restriction.equals( RequestRestriction.IN_TRADE ) ) _s( requester, "request.in-trade");			
 
-		if ( restriction.equals( RequestRestriction.IGNORING ) ) languageManager.sendMessage( requester, "request.ignoring.is-ignoring", new String[][]{ {"%playername%", requested.getName()} } );
+		if ( restriction.equals( RequestRestriction.IGNORING ) ) _s( requester, "request.ignoring.is-ignoring", new String[][]{ {"%playername%", requested.getName()} } );
 
-		if ( restriction.equals( RequestRestriction.WAIT ) ) languageManager.sendMessage( requester, "request.please-wait");
+		if ( restriction.equals( RequestRestriction.WAIT ) ) _s( requester, "request.please-wait");
 
 		if ( configurationManager.debugMode ) requester.sendMessage( restriction.toString() );
 
