@@ -13,10 +13,10 @@ import static me.josvth.trade.managers.ExtensionManager.economy;
 public class CurrencyLayout extends ItemLayout {
 
 	// Slots		
-	// Add currency slots
-	int[] leftSmallSlots;
-	int[] leftMediumSlots;
-	int[] leftLargeSlots;
+	// Change currency slots
+	int[] changeSmallSlots;
+	int[] changeMediumSlots;
+	int[] changeLargeSlots;
 
 	// Display currency slots
 	int[] leftDisplaySmallSlots;
@@ -46,14 +46,18 @@ public class CurrencyLayout extends ItemLayout {
 	@Override
 	public void fillInventory(Inventory inventory) {
 
+		System.out.print( getSmallChangeItem().toString() );
+		System.out.print( getMediumChangeItem().toString() );
+		System.out.print( getLargeChangeItem().toString() );
+
 		// Set left small items
-		for ( int slot : getLeftChangeSmallSlots() ) inventory.setItem( slot, getSmallChangeItem() );
+		for ( int slot : getChangeSmallSlots() ) inventory.setItem( slot, getSmallChangeItem() );
 
 		// Set left medium items
-		for ( int slot : getLeftChangeMediumSlots() ) inventory.setItem( slot, getMediumChangeItem() );
+		for ( int slot : getChangeMediumSlots() ) inventory.setItem( slot, getMediumChangeItem() );
 
 		// Set left large items
-		for ( int slot : getLeftChangeLargeSlots() ) inventory.setItem( slot, getLargeChangeItem() );
+		for ( int slot : getChangeLargeSlots() ) inventory.setItem( slot, getLargeChangeItem() );
 
 		super.fillInventory(inventory);
 
@@ -61,28 +65,28 @@ public class CurrencyLayout extends ItemLayout {
 
 	// Slots
 	// Change
-	public int[] getLeftChangeSmallSlots() {
-		return leftSmallSlots;
+	public int[] getChangeSmallSlots() {
+		return changeSmallSlots;
 	}
 
-	public void setLeftChangeSmallSlots(int[] leftSmallSlots) {
-		this.leftSmallSlots = leftSmallSlots;
+	public void setChangeSmallSlots(int[] changeSmallSlots) {
+		this.changeSmallSlots = changeSmallSlots;
 	}
 
-	public int[] getLeftChangeMediumSlots() {
-		return leftMediumSlots;
+	public int[] getChangeMediumSlots() {
+		return changeMediumSlots;
 	}
 
-	public void setLeftChangeMediumSlots(int[] leftMediumSlots) {
-		this.leftMediumSlots = leftMediumSlots;
+	public void setChangeMediumSlots(int[] changeMediumSlots) {
+		this.changeMediumSlots = changeMediumSlots;
 	}
 
-	public int[] getLeftChangeLargeSlots() {
-		return leftLargeSlots;
+	public int[] getChangeLargeSlots() {
+		return changeLargeSlots;
 	}
 
-	public void setLeftChangeLargeSlots(int[] leftLargeSlots) {
-		this.leftLargeSlots = leftLargeSlots;
+	public void setChangeLargeSlots(int[] changeLargeSlots) {
+		this.changeLargeSlots = changeLargeSlots;
 	}
 
 	// Display
@@ -262,9 +266,9 @@ public class CurrencyLayout extends ItemLayout {
 		int add = 9 * ( layout.getRows() - 2);
 
 		// Add currency slots
-		layout.setLeftChangeSmallSlots( 	new int[]{ 9  + add } );
-		layout.setLeftChangeMediumSlots(	new int[]{ 10 + add } );
-		layout.setLeftChangeLargeSlots(		new int[]{ 11 + add } );
+		layout.setChangeSmallSlots( 	new int[]{ 9  + add } );
+		layout.setChangeMediumSlots(	new int[]{ 10 + add } );
+		layout.setChangeLargeSlots(		new int[]{ 11 + add } );
 
 		// Display currency slots
 		layout.setLeftDisplaySmallSlots( 	new int[]{ 0 } );
@@ -313,13 +317,13 @@ public class CurrencyLayout extends ItemLayout {
 		setCurrencyAmounts( layout, 1, 10, 50 );
 
 		String smallCurrency 	= economy.format( 1.0 );
-		smallCurrency = Matcher.quoteReplacement( ( smallCurrency == null )? String.valueOf( 1.0 ) : smallCurrency );
+		smallCurrency 	= Matcher.quoteReplacement( ( smallCurrency == null )? String.valueOf( 1.0 ) : smallCurrency );
 		
 		String mediumCurrency 	= economy.format( 10.0 );
-		mediumCurrency = Matcher.quoteReplacement( ( mediumCurrency == null )? String.valueOf( 10.0 ) : mediumCurrency );
+		mediumCurrency 	= Matcher.quoteReplacement( ( mediumCurrency == null )? String.valueOf( 10.0 ) : mediumCurrency );
 
 		String largeCurrency 	= economy.format( 50.0 );
-		largeCurrency = Matcher.quoteReplacement( ( largeCurrency == null )? String.valueOf( 50.0 ) : largeCurrency );
+		largeCurrency 	= Matcher.quoteReplacement( ( largeCurrency == null )? String.valueOf( 50.0 ) : largeCurrency );
 
 		String loreAddSmall 	= _("trade.items.currency.lores.add", new String[][] { { "%amount%", smallCurrency } } );
 		String loreAddMedium	= _("trade.items.currency.lores.add", new String[][] { { "%amount%", mediumCurrency } } );
@@ -328,7 +332,7 @@ public class CurrencyLayout extends ItemLayout {
 		String loreRemoveSmall 	= _("trade.items.currency.lores.remove", new String[][] { { "%amount%", smallCurrency } } );
 		String loreRemoveMedium	= _("trade.items.currency.lores.remove", new String[][] { { "%amount%", mediumCurrency } } );
 		String loreRemoveLarge	= _("trade.items.currency.lores.remove", new String[][] { { "%amount%", largeCurrency } } );
-		
+				
 		// Create change items
 		ItemStack smallChange 	= new ItemStack( 371, 1 );
 		ItemMeta smallChangeMeta = smallChange.getItemMeta();
