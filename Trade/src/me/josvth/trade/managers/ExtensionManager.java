@@ -26,7 +26,7 @@ public class ExtensionManager {
 	// Hooks
 	WorldGuardPlugin worldGuard;
 	MobArena mobArena;
-	Economy economy;
+	public static Economy economy;
 	
 	public ExtensionManager( Trade instance ){
 		plugin = instance;
