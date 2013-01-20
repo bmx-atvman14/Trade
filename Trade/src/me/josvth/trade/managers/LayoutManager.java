@@ -13,29 +13,29 @@ import me.josvth.trade.layouts.ItemLayout;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class LayoutManager {
-	
+
 	public enum LayoutType {
 		ITEM,
 		CURRENCY;
 	}
-	
+
 	private final Trade	plugin;
 	private final ConfigurationManager configurationManager;
-	
+
 	private File layoutFile;	
 	private FileConfiguration layouts;
 
 	private Map<String, ItemLayout> customLayouts = new HashMap<String, ItemLayout>();
-	
+
 	public LayoutManager( Trade instance ) {
 		plugin = instance;
 		configurationManager = plugin.getConfigurationManager();
 	}
-	
+
 	public void initalize() {
 		setup();
 		load();
@@ -45,15 +45,15 @@ public class LayoutManager {
 		layoutFile = new File(plugin.getDataFolder(), "layouts.yml");
 		if (!layoutFile.exists()) plugin.saveResource("layouts.yml", false);
 	}
-	
+
 	public void reload() {
 		initalize();
 	}
 
 	public void load() {
-		
+
 		layouts = new YamlConfiguration();
-		
+
 		try {
 			layouts.load( layoutFile );
 		} catch ( Exception e ) {
@@ -63,23 +63,23 @@ public class LayoutManager {
 				plugin.getLogger().warning("Could not load config file!");
 			return;
 		}
-		
+
 		if ( !plugin.getDescription().getVersion().equals( layouts.getString("version") ) ) {
 			if ( configurationManager.debugMode ) plugin.getLogger().info("Loading defaults in layouts.yml");
 			loadDefaults();
 			layouts.set("version", plugin.getDescription().getVersion());
 			layouts.set("default", null);	// Cleanup for previous versions
-			layouts.options().header("The default and default-currency layouts are just templates! Feel free to change them.");
+			layouts.options().header("The default and default-currency layouts are just templates! Feel free to change them.\n Don't forget to change the custom-layout in the config.yml as well!");
 			save();
 		}
-				
+
 	}
 
 	public void loadDefaults() {
 		layouts.setDefaults(YamlConfiguration.loadConfiguration(plugin.getResource("layouts.yml")));
 		layouts.options().copyDefaults(true);
 	}
-	
+
 	public void save() {
 		try {
 			layouts.save( layoutFile );
@@ -90,216 +90,188 @@ public class LayoutManager {
 				plugin.getLogger().warning("Could not save config file!");
 		}
 	}
-	
-	public ItemLayout getCustomLayout( String id, LayoutType type ){
-		
+
+	public ItemLayout getCustomLayout( String id, int rows, LayoutType type ){
+
 		ItemLayout layout = customLayouts.get( id );
 		
-		if ( layout != null ) return layout.clone();
-		
-		if ( !layouts.contains( id ) ) return null;	// Layout not found in layouts file
-				
+		if ( layout != null ) {
+			if ( configurationManager.debugMode ) 
+				plugin.getLogger().info( "(LM) Returning previously stored layout called: " + id );
+			return layout.clone();
+		}
+
+		if ( !layouts.contains( id ) ) {
+			if ( configurationManager.debugMode ) 
+				plugin.getLogger().info( "(LM) Layout with id: " + id + " was not found.");
+			return null;	// Layout not found in layouts file
+		}
+
 		ConfigurationSection layoutSection = layouts.getConfigurationSection( id );
-		
+
 		boolean currency 	= type.equals( LayoutType.CURRENCY );
 
 		if ( currency )
-			layout = CurrencyLayout.createDefaultLayout( 6 );	// Fixed rows
+			layout = CurrencyLayout.createDefaultLayout( rows );
 		else
-			layout = ItemLayout.createDefaultLayout( 6 );		// Fixed rows
+			layout = ItemLayout.createDefaultLayout( rows );
+
+		if ( configurationManager.debugMode ) 
+			plugin.getLogger().info( "(LM) Created default " + type.name() + " layout.");
 		
-		String buffer;
-		
-		buffer = layoutSection.getString( "slots.action.accept" );
-		if ( buffer != null ) layout.setAcceptSlots( Trade.stringToIntArray( buffer ) );
-		
-		buffer = layoutSection.getString( "slots.action.refuse" );
-		if ( buffer != null ) layout.setRefuseSlots( Trade.stringToIntArray( buffer ) );
-		
-		buffer = layoutSection.getString( "slots.action.status" );
-		if ( buffer != null ) layout.setStatusSlots( Trade.stringToIntArray( buffer ) );
-		
-		buffer = layoutSection.getString( "slots.trade.left" );
-		if ( buffer != null ) layout.setLeftSlots( Trade.stringToIntArray( buffer ) );
-		
-		buffer = layoutSection.getString( "slots.trade.right" );
-		if ( buffer != null ) layout.setRightSlots( Trade.stringToIntArray( buffer ) );
-		
-		buffer = layoutSection.getString( "slots.seperation" );
-		if ( buffer != null ) layout.setSeperatorSlots( Trade.stringToIntArray( buffer ) );
-		
-		int idBuffer = -1;
-		int amountBuffer = 1;
-		short dataBuffer = 0;
-		String labelBuffer = null;
-		
-		// Accept item
-		idBuffer 		= 	layoutSection.getInt( "items.action.accept.type", -1 );
-		amountBuffer 	= 	layoutSection.getInt( "items.action.accept.amount", 1 );
-		dataBuffer 		= 	(short) layoutSection.getInt( "items.action.accept.data", 0 );
-		labelBuffer		=	layoutSection.getString( "items.action.accept.label" );
-		
-		if ( idBuffer > -1 ) {
-			layout.setAcceptItem( new CraftItemStack( idBuffer, amountBuffer, dataBuffer ) );
-			if ( labelBuffer != null ) ( (CraftItemStack) layout.getAcceptItem() ).getHandle().c( labelBuffer );
-		}		
-		
-		// Accepted item
-		idBuffer 		= 	layoutSection.getInt( "items.action.accepted.type", -1 );
-		amountBuffer 	= 	layoutSection.getInt( "items.action.accepted.amount", 1 );
-		dataBuffer 		= 	(short) layoutSection.getInt( "items.action.accepted.data", 0 );
-		labelBuffer		=	layoutSection.getString( "items.action.accepted.label" );
-		
-		if ( idBuffer > -1 ) {
-			layout.setAcceptedItem( new CraftItemStack( idBuffer, amountBuffer, dataBuffer ) );
-			if ( labelBuffer != null ) ( (CraftItemStack) layout.getAcceptedItem() ).getHandle().c( labelBuffer );
+		if ( layoutSection.contains( "slots." + rows ) ) {
+			
+			if ( configurationManager.debugMode ) 
+				plugin.getLogger().info( "(LM) Setting custom slots.");
+			
+			// Accept slots
+			layout.setAcceptSlots( getSlots( layoutSection, rows, "action.accept", layout.getAcceptSlots() ) );
+			
+			// Refuse slots
+			layout.setRefuseSlots( getSlots( layoutSection, rows, "action.refuse", layout.getRefuseSlots() ) );
+			
+			// Status slots
+			layout.setStatusSlots( getSlots( layoutSection, rows, "action.status", layout.getStatusSlots() ) );
+
+			// Trade left slots
+			layout.setLeftSlots( getSlots( layoutSection, rows, "action.status", layout.getLeftSlots() ) );
+
+			// Trade right slots
+			layout.setRightSlots( getSlots( layoutSection, rows, "action.status", layout.getRightSlots() ) );
+
+			// Seperation slots
+			layout.setSeperatorSlots( getSlots( layoutSection, rows, "action.status", layout.getSeperatorSlots() ) );
+
+			if ( currency ) {
+				
+				if ( configurationManager.debugMode ) 
+					plugin.getLogger().info( "(LM) Setting custom currency slots.");
+				
+				// Change slots
+				( (CurrencyLayout) layout ).setChangeSmallSlots( getSlots( layoutSection, rows, "currency.change.small", ( (CurrencyLayout) layout ).getChangeSmallSlots() ) );
+				( (CurrencyLayout) layout ).setChangeMediumSlots( getSlots( layoutSection, rows, "currency.change.medium", ( (CurrencyLayout) layout ).getChangeMediumSlots() ) );
+				( (CurrencyLayout) layout ).setChangeLargeSlots( getSlots( layoutSection, rows, "currency.change.large", ( (CurrencyLayout) layout ).getChangeLargeSlots() ) );
+
+				// Left Display slots
+				( (CurrencyLayout) layout ).setLeftDisplaySmallSlots( getSlots( layoutSection, rows, "currency.display.left.small", ( (CurrencyLayout) layout ).getLeftDisplaySmallSlots() ) );
+				( (CurrencyLayout) layout ).setLeftDisplayMediumSlots( getSlots( layoutSection, rows, "currency.display.left.medium", ( (CurrencyLayout) layout ).getLeftDisplayMediumSlots() ) );
+				( (CurrencyLayout) layout ).setLeftDisplayLargeSlots( getSlots( layoutSection, rows, "currency.display.left.large", ( (CurrencyLayout) layout ).getLeftDisplayLargeSlots() ) );
+				
+				// Right Display slots
+				( (CurrencyLayout) layout ).setRightDisplaySmallSlots( getSlots( layoutSection, rows, "currency.display.right.small", ( (CurrencyLayout) layout ).getRightDisplaySmallSlots() ) );
+				( (CurrencyLayout) layout ).setRightDisplayMediumSlots( getSlots( layoutSection, rows, "currency.display.right.medium", ( (CurrencyLayout) layout ).getRightDisplayMediumSlots() ) );
+				( (CurrencyLayout) layout ).setRightDisplayLargeSlots( getSlots( layoutSection, rows, "currency.display.right.large", ( (CurrencyLayout) layout ).getRightDisplayLargeSlots() ) );
+
+			}
 		}
 		
-		// Refuse item
-		idBuffer 		= 	layoutSection.getInt( "items.action.refuse.type", -1 );
-		amountBuffer 	= 	layoutSection.getInt( "items.action.refuse.amount", 1 );
-		dataBuffer 		= 	(short) layoutSection.getInt( "items.action.refuse.data", 0 );
-		labelBuffer		=	layoutSection.getString( "items.action.refuse.label" );
-		
-		if ( idBuffer > -1 ){
-			layout.setRefuseItem( new ItemStack( idBuffer, amountBuffer, dataBuffer ) );
-			if ( labelBuffer != null ) ( (CraftItemStack) layout.getRefuseItem() ).getHandle().c( labelBuffer );
-		}
+		if ( layoutSection.contains( "items" ) ) {
+			
+			if ( configurationManager.debugMode ) 
+				plugin.getLogger().info( "(LM) Setting custom items.");
+			
+			// Accept item
+			layout.setAcceptItem( getItem( layoutSection, "action.accept", layout.getAcceptItem() ) );	
 
-		// Pending item
-		idBuffer 		= 	layoutSection.getInt( "items.action.pending.type", -1 );
-		amountBuffer 	= 	layoutSection.getInt( "items.action.pending.amount", 1 );
-		dataBuffer 		= 	(short) layoutSection.getInt( "items.action.pending.data", 0 );			
-		labelBuffer		=	layoutSection.getString( "items.action.pending.label" );
-		
-		if ( idBuffer > -1 ){
-			layout.setPendingItem( new ItemStack( idBuffer, amountBuffer, dataBuffer ) );
-			if ( labelBuffer != null ) ( (CraftItemStack) layout.getPendingItem() ).getHandle().c( labelBuffer );
-		}
-		
-		// Separator item
-		idBuffer 		= 	layoutSection.getInt( "items.action.separator.type", -1 );
-		amountBuffer 	= 	layoutSection.getInt( "items.action.separator.amount", 1 );
-		dataBuffer 		= 	(short) layoutSection.getInt( "items.action.separator.data", 0 );
-		labelBuffer		=	null;
-		
-		if ( idBuffer > -1 ) layout.setSeperatorItem( new ItemStack( idBuffer, amountBuffer, dataBuffer ) );
-		
-		if ( currency ) {
-			
-			buffer = layoutSection.getString( "slots.currency.add.small" );
-			if ( buffer != null ) ( (CurrencyLayout) layout ).setAcceptSlots( Trade.stringToIntArray( buffer ) );
-			
-			buffer = layoutSection.getString( "slots.currency.add.medium" );
-			if ( buffer != null ) ( (CurrencyLayout) layout ).setRefuseSlots( Trade.stringToIntArray( buffer ) );
-			
-			buffer = layoutSection.getString( "slots.currency.add.large" );
-			if ( buffer != null ) ( (CurrencyLayout) layout ).setStatusSlots( Trade.stringToIntArray( buffer ) );
-			
-			buffer = layoutSection.getString( "slots.currency.display.left.small" );
-			if ( buffer != null ) ( (CurrencyLayout) layout ).setLeftDisplaySmallSlots( Trade.stringToIntArray( buffer ) );
-			
-			buffer = layoutSection.getString( "slots.currency.display.left.medium" );
-			if ( buffer != null ) ( (CurrencyLayout) layout ).setLeftDisplayMediumSlots( Trade.stringToIntArray( buffer ) );
-			
-			buffer = layoutSection.getString( "slots.currency.display.left.large" );
-			if ( buffer != null ) ( (CurrencyLayout) layout ).setLeftDisplayLargeSlots( Trade.stringToIntArray( buffer ) );
-			
-			buffer = layoutSection.getString( "slots.currency.display.right.small" );
-			if ( buffer != null ) ( (CurrencyLayout) layout ).setRightDisplaySmallSlots( Trade.stringToIntArray( buffer ) );
-			
-			buffer = layoutSection.getString( "slots.currency.display.right.medium" );
-			if ( buffer != null ) ( (CurrencyLayout) layout ).setRightDisplayMediumSlots( Trade.stringToIntArray( buffer ) );
-			
-			buffer = layoutSection.getString( "slots.currency.display.right.large" );
-			if ( buffer != null ) ( (CurrencyLayout) layout ).setRightDisplayLargeSlots( Trade.stringToIntArray( buffer ) );
-			
-			// Currency change buttons
-			idBuffer 		= 	layoutSection.getInt( "items.currency.change.small.type", -1 );
-			amountBuffer 	= 	layoutSection.getInt( "items.currency.change.small.amount", 1 );
-			dataBuffer 		= 	(short) layoutSection.getInt( "items.currency.change.small.data", 0 );
-			labelBuffer		=	layoutSection.getString( "items.currency.change.small.label" );
-			
-			if ( idBuffer > -1 ) {
-				CraftItemStack stack = new CraftItemStack( idBuffer, amountBuffer, dataBuffer );
-				if ( labelBuffer != null ) stack.getHandle().c( labelBuffer );
-				( (CurrencyLayout) layout ).setSmallItem( stack );
+			// Accepted item
+			layout.setAcceptedItem( getItem( layoutSection, "action.accepted", layout.getAcceptedItem() ) );
+
+			// Refuse item
+			layout.setRefuseItem( getItem( layoutSection, "action.refuse", layout.getRefuseItem() ) );
+
+			// Pending item
+			layout.setPendingItem( getItem( layoutSection, "action.pending", layout.getPendingItem() ) );
+
+			// Separator item
+			layout.setSeperatorItem( getItem( layoutSection, "action.seperator", layout.getSeperatorItem() ) );
+
+			if ( currency ) {
+				
+				if ( configurationManager.debugMode ) 
+					plugin.getLogger().info( "(LM) Setting custom currency items.");
+				
+				// Currency values
+				( (CurrencyLayout) layout ).setSmallCurrency( layoutSection.getInt( "currency.small", 1 ) );
+				( (CurrencyLayout) layout ).setMediumCurrency( layoutSection.getInt( "currency.medium", 10 ) );
+				( (CurrencyLayout) layout ).setLargeCurrency( layoutSection.getInt( "currency.large", 50 ) );
+				
+				// Currency change buttons
+				( (CurrencyLayout) layout ).setSmallChangeItem( getItem( layoutSection, "currency.change.small", ( (CurrencyLayout) layout ).getSmallChangeItem() ) );
+				( (CurrencyLayout) layout ).setMediumChangeItem( getItem( layoutSection, "currency.change.medium", ( (CurrencyLayout) layout ).getMediumChangeItem() ) );
+				( (CurrencyLayout) layout ).setLargeChangeItem( getItem( layoutSection, "currency.change.large", ( (CurrencyLayout) layout ).getLargeChangeItem() ) );
+
+				// Currency display buttons
+				( (CurrencyLayout) layout ).setSmallDisplayItem( getItem( layoutSection, "currency.display.small", ( (CurrencyLayout) layout ).getLargeDisplayItem() ) );
+				( (CurrencyLayout) layout ).setMediumDisplayItem( getItem( layoutSection, "currency.display.medium", ( (CurrencyLayout) layout ).getLargeDisplayItem() ) );
+				( (CurrencyLayout) layout ).setLargeDisplayItem( getItem( layoutSection, "currency.display.large", ( (CurrencyLayout) layout ).getLargeDisplayItem() ) );
+
 			}
 
-			idBuffer 		= 	layoutSection.getInt( "items.currency.change.medium.type", -1 );
-			amountBuffer 	= 	layoutSection.getInt( "items.currency.change.medium.amount", 1 );
-			dataBuffer 		= 	(short) layoutSection.getInt( "items.currency.change.medium.data", 0 );
-			labelBuffer		=	layoutSection.getString( "items.currency.change.medium.label" );
-
-			if ( idBuffer > -1 ) {
-				CraftItemStack stack = new CraftItemStack( idBuffer, amountBuffer, dataBuffer );
-				if ( labelBuffer != null ) stack.getHandle().c( labelBuffer );
-				( (CurrencyLayout) layout ).setMediumItem( stack );
-			}
-			
-			idBuffer 		= 	layoutSection.getInt( "items.currency.change.large.type", -1 );
-			amountBuffer 	= 	layoutSection.getInt( "items.currency.change.large.amount", 1 );
-			dataBuffer 		= 	(short) layoutSection.getInt( "items.currency.change.large.data", 0 );
-			labelBuffer		=	layoutSection.getString( "items.currency.change.large.label" );
-
-			if ( idBuffer > -1 ) {
-				CraftItemStack stack = new CraftItemStack( idBuffer, amountBuffer, dataBuffer );
-				if ( labelBuffer != null ) stack.getHandle().c( labelBuffer );
-				( (CurrencyLayout) layout ).setLargeItem( stack );
-			}
-			
-			// Currency display buttons
-			idBuffer 		= 	layoutSection.getInt( "items.currency.display.small.type", -1 );
-			amountBuffer 	= 	layoutSection.getInt( "items.currency.display.small.amount", 1 );
-			dataBuffer 		= 	(short) layoutSection.getInt( "items.currency.display.small.data", 0 );
-			labelBuffer		=	layoutSection.getString( "items.currency.display.small.label" );
-
-			if ( idBuffer > -1 ) {
-				CraftItemStack stack = new CraftItemStack( idBuffer, amountBuffer, dataBuffer );
-				if ( labelBuffer != null ) stack.getHandle().c( labelBuffer );
-				( (CurrencyLayout) layout ).setSmallItemDisplay( stack );
-			}
-			
-			idBuffer 		= 	layoutSection.getInt( "items.currency.display.medium.type", -1 );
-			amountBuffer 	= 	layoutSection.getInt( "items.currency.display.medium.amount", 1 );
-			dataBuffer 		= 	(short) layoutSection.getInt( "items.currency.display.medium.data", 0 );
-			labelBuffer		=	layoutSection.getString( "items.currency.display.medium.label" );
-
-			if ( idBuffer > -1 ) {
-				CraftItemStack stack = new CraftItemStack( idBuffer, amountBuffer, dataBuffer );
-				if ( labelBuffer != null ) stack.getHandle().c( labelBuffer );
-				( (CurrencyLayout) layout ).setMediumItemDisplay( stack );
-			}
-			
-			idBuffer 		= 	layoutSection.getInt( "items.currency.display.large.type", -1 );
-			amountBuffer 	= 	layoutSection.getInt( "items.currency.display.large.amount", 1 );
-			dataBuffer 		= 	(short) layoutSection.getInt( "items.currency.display.large.data", 0 );
-			labelBuffer		=	layoutSection.getString( "items.currency.display.large.label" );
-
-			if ( idBuffer > -1 ) {
-				CraftItemStack stack = new CraftItemStack( idBuffer, amountBuffer, dataBuffer );
-				if ( labelBuffer != null ) stack.getHandle().c( labelBuffer );
-				( (CurrencyLayout) layout ).setLargeItemDisplay( stack );
-			}
+			if ( configurationManager.debugMode ) 
+				plugin.getLogger().info( "(LM) Storing layout.");
 			
 		}
-		
+				
 		customLayouts.put( id , layout );
-		
+
 		return layout;
 	}
 
 	public ItemLayout getItemLayout( int rows ) {
-		if ( configurationManager.layout.equals( "default" ) || rows != 6 )
+		if ( configurationManager.layout.equals( "default" ) )
 			return ItemLayout.createDefaultLayout(rows);
 		else
-			return getCustomLayout( configurationManager.layout, LayoutType.ITEM );
+			return getCustomLayout( configurationManager.layout, rows, LayoutType.ITEM );
 	}
 
 	public CurrencyLayout getCurrencyLayout( int rows ) {
-		if ( configurationManager.layout.equals( "default" ) || rows != 6 )
-			return CurrencyLayout.createDefaultLayout( rows, plugin.getExtensionManager().economy );
+		if ( configurationManager.layout.equals( "default" ) )
+			return CurrencyLayout.createDefaultLayout( rows );
 		else
-			return (CurrencyLayout) getCustomLayout( configurationManager.layout, LayoutType.CURRENCY );
+			return (CurrencyLayout) getCustomLayout( configurationManager.layout, rows, LayoutType.CURRENCY );
 	}
+	
+	private int[] getSlots( ConfigurationSection layoutsection, int rows, String path, int[] def ) {
+		
+		String slotPath = "slots." + rows + "." + path;
+		
+		String slots = layoutsection.getString( path );
+		
+		if ( slots == null ) {
+			if ( configurationManager.debugMode ) 
+				plugin.getLogger().info( "(LM) Custom slots at path: " + layoutsection.getCurrentPath() + "." + slotPath + " not found. Returning default." );
+			return def;
+		}
+		
+		return Trade.stringToIntArray( slots );
+		
+	}
+	
+	private ItemStack getItem( ConfigurationSection layoutsection, String path, ItemStack def ) {
+		
+		String itemPath = "items." + path;
+				
+		ConfigurationSection itemSection = layoutsection.getConfigurationSection( itemPath );
+		
+		if ( itemSection == null ) {
+			if ( configurationManager.debugMode ) 
+				plugin.getLogger().info( "(LM) Custom item at path: " + layoutsection.getCurrentPath() + "." + itemPath + " not found. Returning default." );
+			return def;
+		}
+	
+		int typeID 		=	itemSection.getInt( ".id", def.getTypeId() );		
+		int amount 		= 	itemSection.getInt(".amount", def.getAmount() );	
+		short data 		= 	(short) itemSection.getInt( ".data", def.getData().getData() );
+		String label	=	itemSection.getString( ".label", def.getItemMeta().getDisplayName() );
+		
+		ItemStack item = new ItemStack( typeID, amount, data );
+		ItemMeta meta = def.getItemMeta();
+		meta.setDisplayName( label );
+		item.setItemMeta( meta );
+		
+		return item;
+		
+	}
+	
+
 }
