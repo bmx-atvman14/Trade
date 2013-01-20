@@ -1,52 +1,58 @@
 template-default:
-  type: "ITEM"
+  id: "ITEM"
   slots:
-    action:
-      accept: 3
-      refuse: 4
-      status: 5
-    seperation: 13, 22, 31, 40, 49
-    trade:
-      left: 0,1,2,9,10,11,12,18,19,20,21,27,28,29,30,36,37,38,39,45,46,47,48
-      right: 6,7,8,14,15,16,17,23,24,25,26,32,33,34,35,41,42,43,44,50,51,52,53
+    6:
+      action:
+        accept: 3
+        refuse: 4
+        status: 5
+      seperation: 13, 22, 31, 40, 49
+      trade:
+        left: 0,1,2,9,10,11,12,18,19,20,21,27,28,29,30,36,37,38,39,45,46,47,48
+        right: 6,7,8,14,15,16,17,23,24,25,26,32,33,34,35,41,42,43,44,50,51,52,53
   items:
     action:
       accept:
-        type: 35
+        id: 35
         amount: 1
         data: 5
         label: "Accept"
       accepted:
-        type: 35
+        id: 35
         amount: 1
         data: 5
         label: "You have accepted the trade. Click to deny."
       refuse:
-        type: 35
+        id: 35
         amount: 1
         data: 14
         label: "Refuse"
       pending:
-        type: 35
+        id: 35
         amount: 1
         data: 8
         label: "Waiting for other to accept."
       separator:
-        type: 280
+        id: 280
         amount: 1
         data: 0
         label: ""
 template-currency:
-  type: "CURRENCY"
+  id: "CURRENCY"
   slots:
-    action:
-      accept: 3
-      refuse: 4
-      status: 5
-    seperation: 13, 22, 31, 40, 49
-    trade:
-      left: 9,10,11,12,18,19,20,21,27,28,29,30,36,37,38,39
-      right: 14,15,16,17,23,24,25,26,32,33,34,35,41,42,43,44,50
+    6:
+      action:
+        accept: 3
+        refuse: 4
+        status: 5
+      seperation: 13, 22, 31, 40, 49
+      trade:
+        left: 9,10,11,12,18,19,20,21,27,28,29,30,36,37,38,39
+        right: 14,15,16,17,23,24,25,26,32,33,34,35,41,42,43,44,50
+      change: " "
+      display:
+        left: " "
+        right: " "
   currency:
     small: 1
     medium: 10
@@ -54,27 +60,27 @@ template-currency:
   items:
     action:
       accept:
-        type: 35
+        id: 35
         amount: 1
         data: 5
         label: "Accept"
       accepted:
-        type: 35
+        id: 35
         amount: 1
         data: 5
         label: "You have accepted the trade. Click to deny."
       refuse:
-        type: 35
+        id: 35
         amount: 1
         data: 14
         label: "Refuse"
       pending:
-        type: 35
+        id: 35
         amount: 1
         data: 8
         label: "Waiting for other to accept."
       separator:
-        type: 280
+        id: 280
         amount: 1
         data: 0
         label: ""
