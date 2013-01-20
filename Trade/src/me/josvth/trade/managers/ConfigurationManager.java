@@ -47,6 +47,10 @@ public class ConfigurationManager {
 	public boolean useExtensionEconomy;
 	
 	public List<String> disabledRegions;
+
+	public int smallCurrency = 1;
+	public int mediumCurrency = 10;
+	public int largeCurrency = 50;
 	
 	public ConfigurationManager( Trade instance ) {
 		this.plugin = instance;
@@ -115,6 +119,10 @@ public class ConfigurationManager {
 		useExtensionMobArena	  		= 	config.getBoolean("extensions.mobarena.enable", false);
 		useExtensionCitizens   			= 	config.getBoolean("extensions.citizens.enable", false);
 		useExtensionEconomy 			= 	config.getBoolean("extensions.economy.enable", false);
+		
+		smallCurrency					=   config.getInt("extensions.economy.currency.small", 1);
+		mediumCurrency					=   config.getInt("extensions.economy.currency.medium", 10);
+		largeCurrency					=   config.getInt("extensions.economy.currency.large", 50);
 		
 		disabledRegions					= 	config.getStringList("extensions.worldguard.disabled-regions");
 		if ( disabledRegions == null )	disabledRegions  = new ArrayList<String>();
