@@ -12,8 +12,11 @@ public class ItemInterface implements InventoryHolder {
 	Inventory inventory;
 	ItemLayout layout;
 	
+	String nameOtherPlayer;
+	
 	public ItemInterface( String nameOtherPlayer, ItemLayout layout ){
 		this.inventory = Bukkit.getServer().createInventory( this, layout.getSize(), ItemInterface.generateTitle( nameOtherPlayer ) );
+		this.nameOtherPlayer = nameOtherPlayer;
 		this.layout = layout; 
 		layout.fillInventory( inventory );
 	}
@@ -26,6 +29,10 @@ public class ItemInterface implements InventoryHolder {
 		return inventory;
 	}
 
+	public String getNameOtherPlayer() {
+		return nameOtherPlayer;
+	}
+	
 	public void accept(){
 		for ( int slot : getLayout().getAcceptSlots() ) inventory.setItem(slot, getLayout().getAcceptedItem());
 	}
