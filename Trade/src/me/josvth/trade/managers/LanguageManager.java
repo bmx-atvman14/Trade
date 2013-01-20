@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -29,13 +28,18 @@ public class LanguageManager {
 	
 	public void setDefaults( InputStream defaults ) {
 		yaml.setDefaults( YamlConfiguration.loadConfiguration( defaults ) );
+		yaml.options().copyDefaults( true );
 	}
 	
 	public void reload() {
+		
+		if ( file == null ) return;
+		
 		if ( !file.exists() )
 			saveYaml();
 		else
 			loadYaml();
+		
 	}
 	
 	private void saveYaml() {
@@ -50,7 +54,7 @@ public class LanguageManager {
 
 	private void loadYaml() {
 		try{
-			yaml.load(file);
+			yaml.load( file );
 		}catch(Exception e){
 			e.printStackTrace();
 		}
