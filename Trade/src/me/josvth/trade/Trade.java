@@ -47,6 +47,7 @@ public class Trade extends JavaPlugin{
 		
 		languageManager.setLanguageFile( new File( getDataFolder(), "language.yml" ) );
 		languageManager.setDefaults( getResource( "language.yml") );
+		languageManager.reload();
 		
 		extensionManager.initialize();
 						
