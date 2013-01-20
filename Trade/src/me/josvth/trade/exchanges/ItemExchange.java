@@ -5,7 +5,7 @@ import me.josvth.trade.exchangeinterfaces.ItemInterface;
 import me.josvth.trade.exchangeinterfaces.ItemInterface.Side;
 import me.josvth.trade.layouts.ItemLayout;
 import me.josvth.trade.managers.ConfigurationManager;
-import me.josvth.trade.managers.LanguageManager;
+import static me.josvth.trade.managers.LanguageManager._s;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -15,8 +15,7 @@ public class ItemExchange {
 	protected final Trade plugin;
 	
 	private final ConfigurationManager configManager;
-	protected final LanguageManager languageManager;
-	
+
 	protected final Player p1;
 
 	protected final Player p2;
@@ -36,7 +35,6 @@ public class ItemExchange {
 		plugin = instance;
 		
 		configManager = plugin.getConfigurationManager();
-		languageManager = plugin.getLanguageManager();
 
 		p1 = player1;
 		p2 = player2;
@@ -91,8 +89,8 @@ public class ItemExchange {
 			getInterface( p1 ).acceptOther();
 		} else return;
 		
-		languageManager.sendMessage( who, "trade.accept.self" );
-		languageManager.sendMessage( getOtherPlayer(who), "trade.accept.other", new String[][]{ {"%playername%", who.getName()} });
+		_s( who, "trade.accept.self" );
+		_s( getOtherPlayer(who), "trade.accept.other", new String[][]{ {"%playername%", who.getName()} });
 				
 		if(p1acc && p2acc) finish();
 		
@@ -153,8 +151,8 @@ public class ItemExchange {
 
 	public void refuse(Player player) {
 		
-		languageManager.sendMessage(player, "trade.refuse.self");
-		languageManager.sendMessage(getOtherPlayer(player),"trade.refuse.other", new String[][]{ {"%playername%", player.getName()} });
+		_s(player, "trade.refuse.self");
+		_s(getOtherPlayer(player),"trade.refuse.other", new String[][]{ {"%playername%", player.getName()} });
 		
 		stop();
 	}
@@ -188,10 +186,10 @@ public class ItemExchange {
 		p1.openInventory( getInterface( p1 ).getInventory() );
 		p2.openInventory( getInterface( p2 ).getInventory() );
 		
-		languageManager.sendMessage(p1, "trade.start", new String[][]{ {"%playername%", p2.getName()} });
-		languageManager.sendMessage(p2, "trade.start", new String[][]{ {"%playername%", p1.getName()} });
-		languageManager.sendMessage(p1, "trade.help");
-		languageManager.sendMessage(p2, "trade.help");
+		_s(p1, "trade.start", new String[][]{ {"%playername%", p2.getName()} });
+		_s(p2, "trade.start", new String[][]{ {"%playername%", p1.getName()} });
+		_s(p1, "trade.help");
+		_s(p2, "trade.help");
 		
 		inprogress = true;
 		
@@ -239,8 +237,8 @@ public class ItemExchange {
 
 	public void forceStopTrading() {
 		
-		languageManager.sendMessage(p1, "trade.error");
-		languageManager.sendMessage(p2, "trade.error");
+		_s(p1, "trade.error");
+		_s(p2, "trade.error");
 		
 		stop();
 	}

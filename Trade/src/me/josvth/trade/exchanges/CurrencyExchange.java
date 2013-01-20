@@ -6,6 +6,8 @@ import me.josvth.trade.Trade;
 import me.josvth.trade.exchangeinterfaces.CurrencyInterface;
 import me.josvth.trade.exchangeinterfaces.ItemInterface.Side;
 import me.josvth.trade.layouts.CurrencyLayout;
+import static me.josvth.trade.managers.LanguageManager._s;
+
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 
@@ -48,7 +50,7 @@ public class CurrencyExchange extends ItemExchange{
 		amount = Math.abs( amount );
 
 		if(!economy.has(player.getName(), amount)){		// Check if the player has the money he wants to add
-			languageManager.sendMessage(player, "trade.currency.no-balance", new String[][]{ {"%amount%", formatAmount} });
+			_s(player, "trade.currency.no-balance", new String[][]{ {"%amount%", formatAmount} });
 			return;
 		}
 
@@ -61,15 +63,16 @@ public class CurrencyExchange extends ItemExchange{
 		othersInterface.setCurrency( newAmount , Side.RIGHT );
 
 		// Send messages
-		languageManager.sendMessage(player, "trade.currency.add.self", 
+		_s(player, "trade.currency.add.self", 
 				new String[][]{ {"%amount%", formatAmount}, {"%balance%", Matcher.quoteReplacement(economy.format(response.balance))} });
-		languageManager.sendMessage(other, "trade.currency.add.other", 
+		_s(other, "trade.currency.add.other", 
 				new String[][]{ {"%playername%", player.getName()}, {"%amount%", formatAmount} });
 
 		// Just to be sure cancel the accepts
-		super.denyTrade( player );
-		super.cancelAcceptOf( other );
-		languageManager.sendMessage( other, "trade.offer-changed", new String[][]{ {"%playername%", player.getName()} });
+		denyTrade( player );
+		cancelAcceptOf( other );
+		if ( hasAccepted( other ) )
+			_s( other, "trade.offer-changed", new String[][]{ {"%playername%", player.getName()} });
 
 	}
 
@@ -84,7 +87,7 @@ public class CurrencyExchange extends ItemExchange{
 
 		// Check if player added enough to the trade to recall
 		if( currencyInterface.getCurrency( Side.LEFT ) < amount ) {
-			languageManager.sendMessage(player, "trade.currency.remove.cant", new String[][]{ {"%amount%", formatAmount} });
+			_s(player, "trade.currency.remove.cant", new String[][]{ {"%amount%", formatAmount} });
 			return;
 		}
 
@@ -97,15 +100,16 @@ public class CurrencyExchange extends ItemExchange{
 		othersInterface.setCurrency( newAmount , Side.RIGHT );
 
 		// Send messages
-		languageManager.sendMessage(player, "trade.currency.add.self", 
+		_s(player, "trade.currency.remove.self", 
 				new String[][]{ {"%amount%", formatAmount}, {"%balance%", Matcher.quoteReplacement(economy.format(response.balance))} });
-		languageManager.sendMessage(other, "trade.currency.add.other", 
+		_s(other, "trade.currency.remove.other", 
 				new String[][]{ {"%playername%", player.getName()}, {"%amount%", formatAmount} });
 		
 		// Just to be sure cancel the accepts
-		super.denyTrade( player );
-		super.cancelAcceptOf( other );
-		languageManager.sendMessage( other, "trade.offer-changed", new String[][]{ {"%playername%", player.getName()} });
+		denyTrade( player );
+		cancelAcceptOf( other );
+		if ( hasAccepted( other ) )
+			_s( other, "trade.offer-changed", new String[][]{ {"%playername%", player.getName()} });
 
 	}
 
