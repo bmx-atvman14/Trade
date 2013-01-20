@@ -8,6 +8,7 @@ import java.util.Map;
 import me.josvth.trade.Trade;
 import me.josvth.trade.exchanges.CurrencyExchange;
 import me.josvth.trade.exchanges.ItemExchange;
+import static me.josvth.trade.managers.LanguageManager._s;
 
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -17,7 +18,6 @@ public class RequestManager {
 	private final Trade plugin;
 	private ConfigurationManager configurationManger;
 	private ExtensionManager extensionManager;
-	private LanguageManager languageManager;
 
 	// key = requester , value = requested
 	public Map<Player, Player> pendingRequests = new HashMap<Player, Player>();
@@ -31,9 +31,9 @@ public class RequestManager {
 	public void initalize() {
 		configurationManger = plugin.getConfigurationManager();
 		extensionManager = plugin.getExtensionManager();
-		languageManager = plugin.getLanguageManager();
 	}
 
+	@SuppressWarnings("deprecation")
 	public void makeRequest( final Player requester, final Player requested ){		
 		
 		if ( configurationManger.debugMode ) 
@@ -41,15 +41,15 @@ public class RequestManager {
 		
 		pendingRequests.put( requester, requested );
 		
-		languageManager.sendMessage( requester, "request.new.self", new String[][]{ {"%playername%", requested.getName()} });
-		languageManager.sendMessage( requested, "request.new.other", new String[][]{ {"%playername%", requester.getName()} });
+		_s( requester, "request.new.self", new String[][]{ {"%playername%", requested.getName()} });
+		_s( requested, "request.new.other", new String[][]{ {"%playername%", requester.getName()} });
 
 		plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
 
 			@Override
 			public void run() {
 				if ( !isRequesting( requester ) ) return;
-				languageManager.sendMessage( requester, "request.no-response", new String[][]{ {"%playername%", requested.getName()} });
+				_s( requester, "request.no-response", new String[][]{ {"%playername%", requested.getName()} });
 				pendingRequests.remove( requester );
 			}
 
@@ -136,7 +136,7 @@ public class RequestManager {
 
 	public void refuseRequest( Player requested, Player requester ){
 		if ( pendingRequests.get( requester ) != requested ) return;
-		languageManager.sendMessage( requester, "request.refused", new String[][]{ {"%playername%", requested.getName()} });
+		_s( requester, "request.refused", new String[][]{ {"%playername%", requested.getName()} });
 		pendingRequests.remove( requester );
 	}
 
@@ -163,13 +163,10 @@ public class RequestManager {
 	}
 
 	public void toggleIgnoring(Player player) {
-		if (  isIgnoring(player) ) {
-			player.removeMetadata( "trade.ignore", plugin );
-			languageManager.sendMessage(player, "request.ignoring.disabled");
-		} else  {
-			player.setMetadata( "trade.ignore", new FixedMetadataValue( plugin, true) );
-			languageManager.sendMessage(player, "request.ignoring.enabled");
-		}
+		if (  isIgnoring(player) )
+			listenAll( player );
+		else
+			ignoreAll( player );
 	}
 	
 	private boolean inTrade( Player player ) {
@@ -225,4 +222,14 @@ public class RequestManager {
 			exchange.stop();
 	}
 
+	public void listenAll(Player player) {
+		player.removeMetadata( "trade.ignore", plugin );
+		_s(player, "request.ignoring.disabled");
+	}
+
+	private void ignoreAll(Player player) {
+		player.setMetadata( "trade.ignore", new FixedMetadataValue( plugin, true) );
+		_s(player, "request.ignoring.enabled");
+	}
+	
 }
