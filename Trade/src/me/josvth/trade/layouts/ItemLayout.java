@@ -1,8 +1,8 @@
 package me.josvth.trade.layouts;
 
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import static me.josvth.trade.managers.LanguageManager._;
 
@@ -203,19 +203,27 @@ public class ItemLayout {
 	
 	protected static void setActionItems( ItemLayout layout ) {
 		
-		CraftItemStack acceptItem 		= new CraftItemStack( 35, 0, (short) 5  );
-		acceptItem.getHandle().c( _( "trade.item-label.accept" ) );
+		ItemStack acceptItem 	= new ItemStack( 35, 0, (short) 5  );
+		ItemMeta acceptMeta = acceptItem.getItemMeta();
+		acceptMeta.setDisplayName( _( "trade.items.accept" ) );
+		acceptItem.setItemMeta( acceptMeta );
 		
-		CraftItemStack acceptedItem 	= new CraftItemStack( 35, 0, (short) 4  );
-		acceptedItem.getHandle().c( _( "trade.item-label.accepted" ) );
+		ItemStack acceptedItem 	= new ItemStack( 35, 0, (short) 4  );
+		ItemMeta acceptedMeta = acceptedItem.getItemMeta();
+		acceptedMeta.setDisplayName( _( "trade.items.accepted" ) );
+		acceptedItem.setItemMeta( acceptedMeta );
 		
-		CraftItemStack refuseItem 		= new CraftItemStack( 35, 0, (short) 14 );
-		refuseItem.getHandle().c( _( "trade.item-label.refuse" ) );
+		ItemStack refuseItem 	= new ItemStack( 35, 0, (short) 14 );
+		ItemMeta refuseMeta = refuseItem.getItemMeta();
+		refuseMeta.setDisplayName( _( "trade.items.refuse" ) );
+		refuseItem.setItemMeta( refuseMeta );
 		
-		CraftItemStack pendingItem 		= new CraftItemStack( 35, 0, (short) 8  );
-		pendingItem.getHandle().c( _( "trade.item-label.pending" ) );
+		ItemStack pendingItem 	= new ItemStack( 35, 0, (short) 8  );
+		ItemMeta pendingMeta = pendingItem.getItemMeta();
+		pendingMeta.setDisplayName( _( "trade.items.pending" ) );
+		pendingItem.setItemMeta( pendingMeta );
 		
-		CraftItemStack seperatorItem	= new CraftItemStack( 280, 0 );
+		ItemStack seperatorItem	= new ItemStack( 280, 0 );
 		
 		layout.setAcceptItem( acceptItem 	);
 		layout.setAcceptedItem( acceptedItem );
