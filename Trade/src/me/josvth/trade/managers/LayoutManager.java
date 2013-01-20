@@ -189,12 +189,7 @@ public class LayoutManager {
 				
 				if ( configurationManager.debugMode ) 
 					plugin.getLogger().info( "(LM) Setting custom currency items.");
-				
-				// Currency values
-				( (CurrencyLayout) layout ).setSmallCurrency( layoutSection.getInt( "currency.small", 1 ) );
-				( (CurrencyLayout) layout ).setMediumCurrency( layoutSection.getInt( "currency.medium", 10 ) );
-				( (CurrencyLayout) layout ).setLargeCurrency( layoutSection.getInt( "currency.large", 50 ) );
-				
+								
 				// Currency change buttons
 				( (CurrencyLayout) layout ).setSmallChangeItem( getItem( layoutSection, "currency.change.small", ( (CurrencyLayout) layout ).getSmallChangeItem() ) );
 				( (CurrencyLayout) layout ).setMediumChangeItem( getItem( layoutSection, "currency.change.medium", ( (CurrencyLayout) layout ).getMediumChangeItem() ) );
@@ -211,7 +206,18 @@ public class LayoutManager {
 				plugin.getLogger().info( "(LM) Storing layout.");
 			
 		}
-				
+		
+		if ( currency ) {
+			
+			if ( configurationManager.debugMode ) 
+				plugin.getLogger().info( "(LM) Setting custom currency values.");
+			
+			// Currency values
+			( (CurrencyLayout) layout ).setSmallCurrency( layoutSection.getInt( "currency.small", 1 ) );
+			( (CurrencyLayout) layout ).setMediumCurrency( layoutSection.getInt( "currency.medium", 10 ) );
+			( (CurrencyLayout) layout ).setLargeCurrency( layoutSection.getInt( "currency.large", 50 ) );
+		}
+		
 		customLayouts.put( id , layout );
 
 		return layout;
