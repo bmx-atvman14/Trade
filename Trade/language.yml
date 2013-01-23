@@ -71,4 +71,4 @@ trade:
           left: "&6You offered: %amount%"
           right: "&6%playername% offered: %amount%"
 global:
-  reload: "Yamls reloaded!"  
+  reload: "Trade reloaded!"  
