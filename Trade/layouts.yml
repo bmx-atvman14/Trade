@@ -49,19 +49,20 @@ template-currency:
       trade:
         left: 9,10,11,12,18,19,20,21,27,28,29,30,36,37,38,39
         right: 14,15,16,17,23,24,25,26,32,33,34,35,41,42,43,44,50
-      change:
-        small: 45
-        medium: 46
-        large: 47
-      display:
-        left:
-          small: 0
-          medium: 1
-          large: 2
-        right:
-          small: 6
-          medium: 7
-          large: 8
+      currency:
+        change:
+          small: 45
+          medium: 46
+          large: 47
+        display:
+          left:
+            small: 0
+            medium: 1
+            large: 2
+          right:
+            small: 6
+            medium: 7
+            large: 8
   currency:
     small: 1
     medium: 10
