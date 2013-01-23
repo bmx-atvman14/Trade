@@ -46,10 +46,6 @@ public class CurrencyLayout extends ItemLayout {
 	@Override
 	public void fillInventory(Inventory inventory) {
 
-		System.out.print( getSmallChangeItem().toString() );
-		System.out.print( getMediumChangeItem().toString() );
-		System.out.print( getLargeChangeItem().toString() );
-
 		// Set left small items
 		for ( int slot : getChangeSmallSlots() ) inventory.setItem( slot, getSmallChangeItem() );
 
@@ -141,7 +137,7 @@ public class CurrencyLayout extends ItemLayout {
 	// Items
 	// Change
 	public ItemStack getSmallChangeItem() {
-		return smallItem;
+		return smallItem.clone();
 	}
 
 	public void setSmallChangeItem(ItemStack smallItem) {
@@ -149,7 +145,7 @@ public class CurrencyLayout extends ItemLayout {
 	}
 
 	public ItemStack getMediumChangeItem() {
-		return mediumItem;
+		return mediumItem.clone();
 	}
 
 	public void setMediumChangeItem(ItemStack mediumItem) {
@@ -157,7 +153,7 @@ public class CurrencyLayout extends ItemLayout {
 	}
 
 	public ItemStack getLargeChangeItem() {
-		return largeItem;
+		return largeItem.clone();
 	}
 
 	public void setLargeChangeItem(ItemStack largeItem) {
@@ -166,7 +162,7 @@ public class CurrencyLayout extends ItemLayout {
 
 	//Display
 	public ItemStack getSmallDisplayItem() {
-		return smallDisplayItem;
+		return smallDisplayItem.clone();
 	}
 
 	public void setSmallDisplayItem(ItemStack smallDisplayItem) {
@@ -174,7 +170,7 @@ public class CurrencyLayout extends ItemLayout {
 	}
 
 	public ItemStack getMediumDisplayItem() {
-		return mediumDisplayItem;
+		return mediumDisplayItem.clone();
 	}
 
 	public void setMediumDisplayItem(ItemStack mediumDisplayItem) {
@@ -182,7 +178,7 @@ public class CurrencyLayout extends ItemLayout {
 	}
 
 	public ItemStack getLargeDisplayItem() {
-		return largeDisplayItem;
+		return largeDisplayItem.clone();
 	}
 
 	public void setLargeDisplayItem(ItemStack largeDisplayItem) {
@@ -212,35 +208,6 @@ public class CurrencyLayout extends ItemLayout {
 
 	public void setLargeCurrency(int largeCurrency) {
 		this.largeCurrency = largeCurrency;
-	}
-
-	@Override
-	public CurrencyLayout clone() {
-
-		CurrencyLayout clone = new CurrencyLayout();
-
-		clone.setRows( getRows() );
-		clone.setAcceptItem( getAcceptedItem() );
-		clone.setAcceptedItem( getAcceptedItem() );
-		clone.setRefuseItem( getRefuseItem() );
-		clone.setSeperatorItem( getSeperatorItem() );
-		clone.setLeftSlots( getLeftSlots() );
-		clone.setRightSlots( getRightSlots() );
-
-
-		clone.setSmallCurrency( getSmallCurrency() );
-		clone.setMediumCurrency( getMediumCurrency() );
-		clone.setLargeCurrency( getLargeCurrency() );
-
-		clone.setSmallChangeItem( getSmallChangeItem() );
-		clone.setMediumChangeItem( getMediumChangeItem() );
-		clone.setLargeChangeItem( getLargeChangeItem() );
-
-		clone.setSmallDisplayItem( getSmallDisplayItem() );
-		clone.setMediumDisplayItem( getMediumDisplayItem() );
-		clone.setLargeDisplayItem( getLargeDisplayItem() );
-
-		return clone;
 	}
 
 	private static void setTradeSlots( CurrencyLayout layout ){
@@ -318,7 +285,7 @@ public class CurrencyLayout extends ItemLayout {
 
 		String smallCurrency 	= economy.format( 1.0 );
 		smallCurrency 	= Matcher.quoteReplacement( ( smallCurrency == null )? String.valueOf( 1.0 ) : smallCurrency );
-		
+
 		String mediumCurrency 	= economy.format( 10.0 );
 		mediumCurrency 	= Matcher.quoteReplacement( ( mediumCurrency == null )? String.valueOf( 10.0 ) : mediumCurrency );
 
@@ -328,30 +295,30 @@ public class CurrencyLayout extends ItemLayout {
 		String loreAddSmall 	= _("trade.items.currency.lores.add", new String[][] { { "%amount%", smallCurrency } } );
 		String loreAddMedium	= _("trade.items.currency.lores.add", new String[][] { { "%amount%", mediumCurrency } } );
 		String loreAddLarge		= _("trade.items.currency.lores.add", new String[][] { { "%amount%", largeCurrency } } );
-		
+
 		String loreRemoveSmall 	= _("trade.items.currency.lores.remove", new String[][] { { "%amount%", smallCurrency } } );
 		String loreRemoveMedium	= _("trade.items.currency.lores.remove", new String[][] { { "%amount%", mediumCurrency } } );
 		String loreRemoveLarge	= _("trade.items.currency.lores.remove", new String[][] { { "%amount%", largeCurrency } } );
-				
+
 		// Create change items
 		ItemStack smallChange 	= new ItemStack( 371, 1 );
 		ItemMeta smallChangeMeta = smallChange.getItemMeta();
 		smallChangeMeta.setDisplayName( _("trade.items.currency.labels.small", new String[][] { { "%amount%", smallCurrency } } ) );
 		smallChangeMeta.setLore( Arrays.asList( new String[] { loreAddSmall, loreRemoveSmall }) );
 		smallChange.setItemMeta( smallChangeMeta );
-		
+
 		ItemStack mediumChange	= new ItemStack( 266, 10 );
 		ItemMeta mediumChangeMeta = mediumChange.getItemMeta();
 		mediumChangeMeta.setDisplayName( _("trade.items.currency.labels.medium", new String[][] { { "%amount%", mediumCurrency } } ) );
 		mediumChangeMeta.setLore( Arrays.asList( new String[] { loreAddMedium, loreRemoveMedium }) );
 		mediumChange.setItemMeta( mediumChangeMeta );
-		
+
 		ItemStack largeChange 	= new ItemStack( 41, 50 );
 		ItemMeta largeChangeMeta = largeChange.getItemMeta();
 		largeChangeMeta.setDisplayName( _("trade.items.currency.labels.large", new String[][] { { "%amount%", largeCurrency } } ) );
 		largeChangeMeta.setLore( Arrays.asList( new String[] { loreAddLarge, loreRemoveLarge }) );
 		largeChange.setItemMeta( largeChangeMeta );
-		
+
 		setCurrencyChangeItems( layout, smallChange, mediumChange, largeChange );
 
 		// Create display items
@@ -359,7 +326,7 @@ public class CurrencyLayout extends ItemLayout {
 		ItemMeta smallDisplayMeta = smallDisplay.getItemMeta();
 		smallDisplayMeta.setLore( Arrays.asList( new String[] { loreRemoveSmall }) );
 		smallDisplay.setItemMeta( smallDisplayMeta );
-		
+
 		ItemStack mediumDisplay	= new ItemStack( 266 );
 		ItemMeta mediumDisplayMeta = mediumDisplay.getItemMeta();
 		mediumDisplayMeta.setLore( Arrays.asList( new String[] { loreRemoveMedium }) );
@@ -369,7 +336,7 @@ public class CurrencyLayout extends ItemLayout {
 		ItemMeta largeDisplayMeta = largeDisplay.getItemMeta();
 		largeDisplayMeta.setLore( Arrays.asList( new String[] { loreRemoveLarge }) );
 		largeDisplay.setItemMeta( largeDisplayMeta );
-				
+
 		setCurrencyDisplayItems( layout, smallDisplay, mediumDisplay, largeDisplay );
 
 		return layout;

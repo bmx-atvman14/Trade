@@ -23,13 +23,13 @@ public class ItemLayout {
 	ItemStack refuseItem;
 	ItemStack pendingItem;
 	ItemStack seperatorItem;
-	
+
 	private int rows;
-		
+
 	public int getSize() {
 		return rows * 9;
 	}
-	
+
 	public int getRows() {
 		return rows;
 	}
@@ -39,13 +39,13 @@ public class ItemLayout {
 		if ( rows < 2 )	rows = 2;
 		this.rows = rows;
 	}
-			
+
 	public void fillInventory(Inventory inventory) {
 
-		for ( int slot : seperatorSlots ) 	inventory.setItem( slot , seperatorItem );
-		for ( int slot : acceptSlots ) 		inventory.setItem( slot , acceptItem );
-		for ( int slot : refuseSlots ) 		inventory.setItem( slot , refuseItem ); 
-		for ( int slot : statusSlots )		inventory.setItem( slot , pendingItem ); 
+		for ( int slot : getSeperatorSlots() 	) 	inventory.setItem( slot , seperatorItem );
+		for ( int slot : getAcceptSlots() 		) 	inventory.setItem( slot , acceptItem );
+		for ( int slot : getRefuseSlots()	 	) 	inventory.setItem( slot , refuseItem ); 
+		for ( int slot : getStatusSlots() 		)	inventory.setItem( slot , pendingItem ); 
 
 	}
 
@@ -77,23 +77,23 @@ public class ItemLayout {
 
 	// Items
 	public ItemStack getAcceptItem() {
-		return acceptItem;
+		return acceptItem.clone();
 	}
-	
+
 	public ItemStack getAcceptedItem() {
-		return acceptedItem;
+		return acceptedItem.clone();
 	}
 
 	public ItemStack getRefuseItem() {
-		return refuseItem;
+		return refuseItem.clone();
 	}
 
 	public ItemStack getPendingItem() {
-		return pendingItem;
+		return pendingItem.clone();
 	}
 
 	public ItemStack getSeperatorItem() {
-		return seperatorItem;
+		return seperatorItem.clone();
 	}
 
 	/* Setters */
@@ -126,12 +126,12 @@ public class ItemLayout {
 	public void setAcceptItem( ItemStack acceptItem ) {
 		this.acceptItem = acceptItem;
 	}
-	
+
 
 	public void setAcceptedItem( ItemStack acceptedItem ) {
 		this.acceptedItem = acceptedItem;
 	}
-	
+
 	public void setRefuseItem(ItemStack refuseItem) {
 		this.refuseItem = refuseItem;
 	}
@@ -144,20 +144,8 @@ public class ItemLayout {
 		this.seperatorItem = seperatorItem;
 	}
 
-	public ItemLayout clone() {
-		ItemLayout clone = new ItemLayout();
-		clone.setRows( getRows() );
-		clone.setAcceptItem( getAcceptedItem() );
-		clone.setAcceptedItem( getAcceptedItem() );
-		clone.setRefuseItem( getRefuseItem() );
-		clone.setSeperatorItem( getSeperatorItem() );
-		clone.setLeftSlots( getLeftSlots() );
-		clone.setRightSlots( getRightSlots() );
-		return clone;
-	}
-	
 	protected static void setActionSlots( ItemLayout layout ){
-		
+
 		layout.setAcceptSlots( new int[]{3} );
 		layout.setRefuseSlots( new int[]{4} );
 		layout.setStatusSlots( new int[]{5} );
@@ -166,11 +154,11 @@ public class ItemLayout {
 		layout.setSeperatorSlots( new int[ seperatorRows ] );
 
 		for ( int i = 0; i < seperatorRows; i++ ) layout.getSeperatorSlots()[ i ] = 13 + i * 9;
-		
+
 	}
-	
+
 	protected static void setTradeSlots( ItemLayout layout ){
-		
+
 		switch ( layout.getRows() ){
 		case 1:
 			layout.setLeftSlots( 	new int[]{0,1,2} );
@@ -200,31 +188,31 @@ public class ItemLayout {
 		}
 		// TODO Make calculation for this as in the CurrencyLayout
 	}
-	
+
 	protected static void setActionItems( ItemLayout layout ) {
-		
+
 		ItemStack acceptItem 	= new ItemStack( 35, 0, (short) 5  );
 		ItemMeta acceptMeta = acceptItem.getItemMeta();
 		acceptMeta.setDisplayName( _( "trade.items.accept" ) );
 		acceptItem.setItemMeta( acceptMeta );
-		
+
 		ItemStack acceptedItem 	= new ItemStack( 35, 0, (short) 4  );
 		ItemMeta acceptedMeta = acceptedItem.getItemMeta();
 		acceptedMeta.setDisplayName( _( "trade.items.accepted" ) );
 		acceptedItem.setItemMeta( acceptedMeta );
-		
+
 		ItemStack refuseItem 	= new ItemStack( 35, 0, (short) 14 );
 		ItemMeta refuseMeta = refuseItem.getItemMeta();
 		refuseMeta.setDisplayName( _( "trade.items.refuse" ) );
 		refuseItem.setItemMeta( refuseMeta );
-		
+
 		ItemStack pendingItem 	= new ItemStack( 35, 0, (short) 8  );
 		ItemMeta pendingMeta = pendingItem.getItemMeta();
 		pendingMeta.setDisplayName( _( "trade.items.pending" ) );
 		pendingItem.setItemMeta( pendingMeta );
-		
+
 		ItemStack seperatorItem	= new ItemStack( 280, 0 );
-		
+
 		layout.setAcceptItem( acceptItem 	);
 		layout.setAcceptedItem( acceptedItem );
 		layout.setRefuseItem( refuseItem	);
@@ -237,11 +225,11 @@ public class ItemLayout {
 
 		ItemLayout layout = new ItemLayout();
 		layout.setRows( rows );
-		
+
 		setActionSlots( layout );
 		setTradeSlots( layout );
 		setActionItems( layout );
-		
+
 		return layout;
 	}
 

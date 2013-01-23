@@ -214,9 +214,9 @@ public class RequestManager {
 
 	}
 
-	// Checks if the requester is already requested by the requested
-	public boolean isRequested( Player requester, Player requested ) {
-		return pendingRequests.get( requested ) == requester;
+	// Checks if a player is requested by another player
+	public boolean isRequested( Player player, Player by ) {
+		return pendingRequests.get( by ) == player;
 	}
 
 	public void stopAll() {

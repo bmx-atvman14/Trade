@@ -1,5 +1,5 @@
 name: Trade
-version: 0.5.5
+version: 0.5.5b
 main: me.josvth.trade.Trade
 author: Josvth
 softdepend: [Vault, Citizens, WorldGuard, MobArena]
@@ -25,8 +25,8 @@ permissions:
       trade.request.command.accept: true
       trade.request.command.refuse: true
   trade.request.right-click:
-    description: Allows you to request players using shift right clicking.
-    default: op
+    description: Allows you to request players using right clicking.
+    default: true
     children:
       trade.request.shift-right-click: true
   trade.request.shift-right-click:

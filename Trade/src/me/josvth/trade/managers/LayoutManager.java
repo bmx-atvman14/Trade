@@ -120,6 +120,8 @@ public class LayoutManager {
 		if ( configurationManager.debugMode ) 
 			plugin.getLogger().info( "(LM) Created default " + type.name() + " layout.");
 		
+		System.out.println( rows );
+		
 		if ( layoutSection.contains( "slots." + rows ) ) {
 			
 			if ( configurationManager.debugMode ) 
@@ -239,18 +241,18 @@ public class LayoutManager {
 	}
 	
 	private int[] getSlots( ConfigurationSection layoutsection, int rows, String path, int[] def ) {
-		
+				
 		String slotPath = "slots." + rows + "." + path;
+				
+		String stringSlots = layoutsection.getString( slotPath );
+				
+		if ( stringSlots == null )
+			return def;		
+					
+		if ( configurationManager.debugMode ) 
+			plugin.getLogger().info( "(LM) Custom slots at path: " + layoutsection.getCurrentPath() + "." + slotPath + " found." );
 		
-		String slots = layoutsection.getString( path );
-		
-		if ( slots == null ) {
-			if ( configurationManager.debugMode ) 
-				plugin.getLogger().info( "(LM) Custom slots at path: " + layoutsection.getCurrentPath() + "." + slotPath + " not found. Returning default." );
-			return def;
-		}
-		
-		return Trade.stringToIntArray( slots );
+		return Trade.stringToIntArray( stringSlots );
 		
 	}
 	
@@ -260,12 +262,12 @@ public class LayoutManager {
 				
 		ConfigurationSection itemSection = layoutsection.getConfigurationSection( itemPath );
 		
-		if ( itemSection == null ) {
-			if ( configurationManager.debugMode ) 
-				plugin.getLogger().info( "(LM) Custom item at path: " + layoutsection.getCurrentPath() + "." + itemPath + " not found. Returning default." );
+		if ( itemSection == null )	
 			return def;
-		}
-	
+		
+		if ( configurationManager.debugMode ) 
+			plugin.getLogger().info( "(LM) Custom item at path: " + layoutsection.getCurrentPath() + "." + itemPath + " found." );
+		
 		int typeID 		=	itemSection.getInt( ".id", def.getTypeId() );		
 		int amount 		= 	itemSection.getInt(".amount", def.getAmount() );	
 		short data 		= 	(short) itemSection.getInt( ".data", def.getData().getData() );

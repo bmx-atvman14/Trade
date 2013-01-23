@@ -82,7 +82,8 @@ public class CommandManager implements CommandExecutor {
 					plugin.getLanguageManager().reload();
 					plugin.getConfigurationManager().reload();
 					plugin.getLanguageManager().reload();
-
+					plugin.getExtensionManager().reload();
+					
 					_s(sender, "global.reload");
 				}
 				return true;
@@ -103,8 +104,6 @@ public class CommandManager implements CommandExecutor {
 				_s( player, "request.player-not-found", new String[][]{ {"%playername%", args[0]} });
 				return true;
 			}
-
-			boolean acceptation = requestManager.isRequested( requested, player );
 			
 			RequestRestriction restriction = requestManager.mayRequest( player , requested, RequestMethod.COMMAND );
 
@@ -113,7 +112,7 @@ public class CommandManager implements CommandExecutor {
 				return true;
 			}
 
-			if ( acceptation ) 
+			if ( requestManager.isRequested( player, requested ) ) 
 				requestManager.acceptRequest( player, requested);
 			else
 				requestManager.makeRequest( player, requested );

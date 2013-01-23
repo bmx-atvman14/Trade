@@ -6,6 +6,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import com.sun.corba.se.spi.activation._ActivatorImplBase;
+
+import static me.josvth.trade.managers.LanguageManager._;
 
 public class ItemInterface implements InventoryHolder {
 
@@ -42,7 +47,11 @@ public class ItemInterface implements InventoryHolder {
 	}
 
 	public void acceptOther(){
-		for ( int slot : getLayout().getStatusSlots() ) inventory.setItem(slot, getLayout().getAcceptItem());
+		ItemStack item = getLayout().getAcceptItem();
+		ItemMeta meta = item.getItemMeta();
+		meta.setDisplayName( _( "trade.items.other-accepted" ) );
+		item.setItemMeta( meta );
+		for ( int slot : getLayout().getStatusSlots() ) inventory.setItem(slot, item );
 	}
 
 	public void denyOther(){

@@ -59,6 +59,7 @@ trade:
     accepted: "&eYou have accepted the trade. Click to deny."
     refuse: "&cRefuse"
     pending: "&7Waiting for other to accept."
+    other-accepted: "&aThe other player accepted the trade!"
     currency:
       lores:
         add: "&rLeft click to add %amount%."

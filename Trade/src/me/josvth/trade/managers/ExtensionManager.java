@@ -81,6 +81,13 @@ public class ExtensionManager {
 		}
 
 	}
+	
+	public void reload() {
+		worldGuard = null;
+		mobArena = null;
+		economy = null;
+		initialize();
+	}
 
 	public WorldGuardPlugin getWorldGuard() {
 		return worldGuard;
