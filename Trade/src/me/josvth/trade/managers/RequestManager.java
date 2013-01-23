@@ -58,6 +58,9 @@ public class RequestManager {
 
 	public RequestRestriction mayRequest( Player requester, Player requested, RequestMethod method ){
 
+		if ( requester.equals( requested ) )
+			return RequestRestriction.SELF;
+		
 		if ( configurationManger.usePermissions && !requester.hasPermission( method.permission ) ) 
 			return RequestRestriction.NO_PERMISSION;
 		
@@ -194,7 +197,8 @@ public class RequestManager {
 		REQUESTED_MOBARENA,
 		REQUESTED_REGION,
 		CITIZEN, 
-		OUT_OF_RANGE;
+		OUT_OF_RANGE, 
+		SELF;
 	}
 
 	public enum RequestMethod {
