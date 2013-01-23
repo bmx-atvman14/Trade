@@ -29,7 +29,7 @@ public class LayoutManager {
 	private File layoutFile;	
 	private FileConfiguration layouts;
 
-	private Map<String, ItemLayout> customLayouts = new HashMap<String, ItemLayout>();
+	private Map<String, ItemLayout> customLayouts;
 
 	public LayoutManager( Trade instance ) {
 		plugin = instance;
@@ -44,6 +44,7 @@ public class LayoutManager {
 	public void setup() {
 		layoutFile = new File(plugin.getDataFolder(), "layouts.yml");
 		if (!layoutFile.exists()) plugin.saveResource("layouts.yml", false);
+		customLayouts = new HashMap<String, ItemLayout>();
 	}
 
 	public void reload() {
