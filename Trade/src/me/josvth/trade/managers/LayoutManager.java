@@ -98,7 +98,7 @@ public class LayoutManager {
 		if ( layout != null ) {
 			if ( configurationManager.debugMode ) 
 				plugin.getLogger().info( "(LM) Returning previously stored layout called: " + id );
-			return layout.clone();
+			return layout;
 		}
 
 		if ( !layouts.contains( id ) ) {
