@@ -12,6 +12,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.UnknownDependencyException;
 
 import com.garbagemule.MobArena.MobArena;
+import com.garbagemule.MobArena.MobArenaHandler;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -25,7 +26,7 @@ public class ExtensionManager {
 		
 	// Hooks
 	WorldGuardPlugin worldGuard;
-	MobArena mobArena;
+	MobArenaHandler mobArena;
 	public static Economy economy;
 	
 	public ExtensionManager( Trade instance ){
@@ -59,7 +60,7 @@ public class ExtensionManager {
 				configManager.save();
 				throw new UnknownDependencyException("MobArena support is enabled but MobArena is not installed!");
 			} else
-				mobArena = (MobArena) mplugin;
+				mobArena = new MobArenaHandler();
 			
 		}
 
@@ -89,17 +90,9 @@ public class ExtensionManager {
 		initialize();
 	}
 
-	public WorldGuardPlugin getWorldGuard() {
-		return worldGuard;
-	}
-
-	public MobArena getMobArena() {
-		return mobArena;
-	}
-
 	public boolean inMobArena( Player player ) {
 		if ( !configManager.useExtensionMobArena ) return false;	
-		return mobArena.getArenaMaster().getArenaWithPlayer( player ) != null;
+		return mobArena.inRegion( player.getLocation() );
 	}
 	
 	public boolean inRestrictedRegion( Player player ) {
