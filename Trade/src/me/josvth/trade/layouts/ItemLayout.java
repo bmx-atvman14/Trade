@@ -42,10 +42,10 @@ public class ItemLayout {
 
 	public void fillInventory(Inventory inventory) {
 
-		for ( int slot : getSeperatorSlots() 	) 	inventory.setItem( slot , seperatorItem );
-		for ( int slot : getAcceptSlots() 		) 	inventory.setItem( slot , acceptItem );
-		for ( int slot : getRefuseSlots()	 	) 	inventory.setItem( slot , refuseItem ); 
-		for ( int slot : getStatusSlots() 		)	inventory.setItem( slot , pendingItem ); 
+		for ( int slot : getSeperatorSlots() 	) 	inventory.setItem( slot , getSeperatorItem() );
+		for ( int slot : getAcceptSlots() 		) 	inventory.setItem( slot , getAcceptItem() );
+		for ( int slot : getRefuseSlots()	 	) 	inventory.setItem( slot , getRefuseItem() ); 
+		for ( int slot : getStatusSlots() 		)	inventory.setItem( slot , getPendingItem() ); 
 
 	}
 
