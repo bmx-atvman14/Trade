@@ -8,8 +8,6 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.sun.corba.se.spi.activation._ActivatorImplBase;
-
 import static me.josvth.trade.managers.LanguageManager._;
 
 public class ItemInterface implements InventoryHolder {
@@ -39,15 +37,15 @@ public class ItemInterface implements InventoryHolder {
 	}
 	
 	public void accept(){
-		for ( int slot : getLayout().getAcceptSlots() ) inventory.setItem(slot, getLayout().getAcceptedItem());
+		for ( int slot : getLayout().getAcceptSlots() ) inventory.setItem(slot, getLayout().getAcceptedItem().createItemStack());
 	}
 
 	public void deny(){
-		for ( int slot : getLayout().getAcceptSlots() ) inventory.setItem(slot, getLayout().getAcceptItem());
+		for ( int slot : getLayout().getAcceptSlots() ) inventory.setItem(slot, getLayout().getAcceptItem().createItemStack());
 	}
 
 	public void acceptOther(){
-		ItemStack item = getLayout().getAcceptItem();
+		ItemStack item = getLayout().getAcceptItem().createItemStack();
 		ItemMeta meta = item.getItemMeta();
 		meta.setDisplayName( _( "trade.items.other-accepted" ) );
 		item.setItemMeta( meta );
@@ -55,7 +53,7 @@ public class ItemInterface implements InventoryHolder {
 	}
 
 	public void denyOther(){
-		for ( int slot : getLayout().getStatusSlots() ) inventory.setItem(slot, getLayout().getPendingItem());
+		for ( int slot : getLayout().getStatusSlots() ) inventory.setItem(slot, getLayout().getPendingItem().createItemStack());
 	}
 
 	public ItemStack[] getItems( Side side ) {

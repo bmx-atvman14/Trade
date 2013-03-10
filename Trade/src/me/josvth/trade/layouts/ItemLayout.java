@@ -1,8 +1,6 @@
 package me.josvth.trade.layouts;
 
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import static me.josvth.trade.managers.LanguageManager._;
 
@@ -18,11 +16,11 @@ public class ItemLayout {
 	int[] statusSlots;
 
 	// Items
-	ItemStack acceptItem;
-	ItemStack acceptedItem;
-	ItemStack refuseItem;
-	ItemStack pendingItem;
-	ItemStack seperatorItem;
+	ItemStackBase acceptItem;
+	ItemStackBase acceptedItem;
+	ItemStackBase refuseItem;
+	ItemStackBase pendingItem;
+	ItemStackBase seperatorItem;
 
 	private int rows;
 
@@ -34,18 +32,24 @@ public class ItemLayout {
 		return rows;
 	}
 
-	public void setRows( int rows ) {
-		if ( rows > 6 ) rows = 6;
-		if ( rows < 2 )	rows = 2;
+	public void setRows(int rows) {
+		if (rows > 6)
+			rows = 6;
+		if (rows < 2)
+			rows = 2;
 		this.rows = rows;
 	}
 
 	public void fillInventory(Inventory inventory) {
 
-		for ( int slot : getSeperatorSlots() 	) 	inventory.setItem( slot , getSeperatorItem() );
-		for ( int slot : getAcceptSlots() 		) 	inventory.setItem( slot , getAcceptItem() );
-		for ( int slot : getRefuseSlots()	 	) 	inventory.setItem( slot , getRefuseItem() ); 
-		for ( int slot : getStatusSlots() 		)	inventory.setItem( slot , getPendingItem() ); 
+		for (int slot : getSeperatorSlots())
+			inventory.setItem(slot, getSeperatorItem().createItemStack());
+		for (int slot : getAcceptSlots())
+			inventory.setItem(slot, getAcceptItem().createItemStack());
+		for (int slot : getRefuseSlots())
+			inventory.setItem(slot, getRefuseItem().createItemStack());
+		for (int slot : getStatusSlots())
+			inventory.setItem(slot, getPendingItem().createItemStack());
 
 	}
 
@@ -76,24 +80,24 @@ public class ItemLayout {
 	}
 
 	// Items
-	public ItemStack getAcceptItem() {
-		return acceptItem.clone();
+	public ItemStackBase getAcceptItem() {
+		return acceptItem;
 	}
 
-	public ItemStack getAcceptedItem() {
-		return acceptedItem.clone();
+	public ItemStackBase getAcceptedItem() {
+		return acceptedItem;
 	}
 
-	public ItemStack getRefuseItem() {
-		return refuseItem.clone();
+	public ItemStackBase getRefuseItem() {
+		return refuseItem;
 	}
 
-	public ItemStack getPendingItem() {
-		return pendingItem.clone();
+	public ItemStackBase getPendingItem() {
+		return pendingItem;
 	}
 
-	public ItemStack getSeperatorItem() {
-		return seperatorItem.clone();
+	public ItemStackBase getSeperatorItem() {
+		return seperatorItem;
 	}
 
 	/* Setters */
@@ -123,112 +127,99 @@ public class ItemLayout {
 	}
 
 	// Items
-	public void setAcceptItem( ItemStack acceptItem ) {
+	public void setAcceptItem(ItemStackBase acceptItem) {
 		this.acceptItem = acceptItem;
 	}
 
-
-	public void setAcceptedItem( ItemStack acceptedItem ) {
+	public void setAcceptedItem(ItemStackBase acceptedItem) {
 		this.acceptedItem = acceptedItem;
 	}
 
-	public void setRefuseItem(ItemStack refuseItem) {
+	public void setRefuseItem(ItemStackBase refuseItem) {
 		this.refuseItem = refuseItem;
 	}
 
-	public void setPendingItem(ItemStack pendingItem) {
+	public void setPendingItem(ItemStackBase pendingItem) {
 		this.pendingItem = pendingItem;
 	}
 
-	public void setSeperatorItem(ItemStack seperatorItem) {
+	public void setSeperatorItem(ItemStackBase seperatorItem) {
 		this.seperatorItem = seperatorItem;
 	}
 
-	protected static void setActionSlots( ItemLayout layout ){
+	protected static void setActionSlots(ItemLayout layout) {
 
-		layout.setAcceptSlots( new int[]{3} );
-		layout.setRefuseSlots( new int[]{4} );
-		layout.setStatusSlots( new int[]{5} );
+		layout.setAcceptSlots(new int[] { 3 });
+		layout.setRefuseSlots(new int[] { 4 });
+		layout.setStatusSlots(new int[] { 5 });
 
-		int seperatorRows = layout.getRows()  - 1;
-		layout.setSeperatorSlots( new int[ seperatorRows ] );
+		int seperatorRows = layout.getRows() - 1;
+		layout.setSeperatorSlots(new int[seperatorRows]);
 
-		for ( int i = 0; i < seperatorRows; i++ ) layout.getSeperatorSlots()[ i ] = 13 + i * 9;
+		for (int i = 0; i < seperatorRows; i++)
+			layout.getSeperatorSlots()[i] = 13 + i * 9;
 
 	}
 
-	protected static void setTradeSlots( ItemLayout layout ){
+	protected static void setTradeSlots(ItemLayout layout) {
 
-		switch ( layout.getRows() ){
+		switch (layout.getRows()) {
 		case 1:
-			layout.setLeftSlots( 	new int[]{0,1,2} );
-			layout.setRightSlots( 	new int[]{6,7,8} );
+			layout.setLeftSlots(new int[] { 0, 1, 2 });
+			layout.setRightSlots(new int[] { 6, 7, 8 });
 			break;
 		case 2:
-			layout.setLeftSlots(	new int[]{0,1,2, 9,10,11,12} );
-			layout.setRightSlots( 	new int[]{6,7,8, 14,15,16,17} );
+			layout.setLeftSlots(new int[] { 0, 1, 2, 9, 10, 11, 12 });
+			layout.setRightSlots(new int[] { 6, 7, 8, 14, 15, 16, 17 });
 			break;
 		case 3:
-			layout.setLeftSlots(	new int[]{0,1,2, 9,10,11,12, 18,19,20,21} );
-			layout.setRightSlots( 	new int[]{6,7,8, 14,15,16,17, 23,24,25,26} );
+			layout.setLeftSlots(new int[] { 0, 1, 2, 9, 10, 11, 12, 18, 19, 20,
+					21 });
+			layout.setRightSlots(new int[] { 6, 7, 8, 14, 15, 16, 17, 23, 24,
+					25, 26 });
 			break;
 		case 4:
-			layout.setLeftSlots(	new int[]{0,1,2, 9,10,11,12, 18,19,20,21, 27,28,29,30} );
-			layout.setRightSlots( 	new int[]{6,7,8, 14,15,16,17, 23,24,25,26, 32,33,34,35} );
+			layout.setLeftSlots(new int[] { 0, 1, 2, 9, 10, 11, 12, 18, 19, 20,
+					21, 27, 28, 29, 30 });
+			layout.setRightSlots(new int[] { 6, 7, 8, 14, 15, 16, 17, 23, 24,
+					25, 26, 32, 33, 34, 35 });
 			break;
 		case 5:
-			layout.setLeftSlots(	new int[]{0,1,2, 9,10,11,12, 18,19,20,21, 27,28,29,30, 36,37,38,39} );
-			layout.setRightSlots( 	new int[]{6,7,8, 14,15,16,17, 23,24,25,26, 32,33,34,35, 41,42,43,44} );
+			layout.setLeftSlots(new int[] { 0, 1, 2, 9, 10, 11, 12, 18, 19, 20,
+					21, 27, 28, 29, 30, 36, 37, 38, 39 });
+			layout.setRightSlots(new int[] { 6, 7, 8, 14, 15, 16, 17, 23, 24,
+					25, 26, 32, 33, 34, 35, 41, 42, 43, 44 });
 			break;
 		case 6:
-			layout.setLeftSlots(	new int[]{0,1,2, 9,10,11,12, 18,19,20,21, 27,28,29,30, 36,37,38,39, 45,46,47,48} );
-			layout.setRightSlots( 	new int[]{6,7,8, 14,15,16,17, 23,24,25,26, 32,33,34,35, 41,42,43,44, 50,51,52,53} );
+			layout.setLeftSlots(new int[] { 0, 1, 2, 9, 10, 11, 12, 18, 19, 20,
+					21, 27, 28, 29, 30, 36, 37, 38, 39, 45, 46, 47, 48 });
+			layout.setRightSlots(new int[] { 6, 7, 8, 14, 15, 16, 17, 23, 24,
+					25, 26, 32, 33, 34, 35, 41, 42, 43, 44, 50, 51, 52, 53 });
 			break;
-		default: break;
+		default:
+			break;
 		}
 		// TODO Make calculation for this as in the CurrencyLayout
 	}
 
 	protected static void setActionItems( ItemLayout layout ) {
 
-		ItemStack acceptItem 	= new ItemStack( 35, 0, (short) 5  );
-		ItemMeta acceptMeta = acceptItem.getItemMeta();
-		acceptMeta.setDisplayName( _( "trade.items.accept" ) );
-		acceptItem.setItemMeta( acceptMeta );
-
-		ItemStack acceptedItem 	= new ItemStack( 35, 0, (short) 4  );
-		ItemMeta acceptedMeta = acceptedItem.getItemMeta();
-		acceptedMeta.setDisplayName( _( "trade.items.accepted" ) );
-		acceptedItem.setItemMeta( acceptedMeta );
-
-		ItemStack refuseItem 	= new ItemStack( 35, 0, (short) 14 );
-		ItemMeta refuseMeta = refuseItem.getItemMeta();
-		refuseMeta.setDisplayName( _( "trade.items.refuse" ) );
-		refuseItem.setItemMeta( refuseMeta );
-
-		ItemStack pendingItem 	= new ItemStack( 35, 0, (short) 8  );
-		ItemMeta pendingMeta = pendingItem.getItemMeta();
-		pendingMeta.setDisplayName( _( "trade.items.pending" ) );
-		pendingItem.setItemMeta( pendingMeta );
-
-		ItemStack seperatorItem	= new ItemStack( 280, 0 );
-
-		layout.setAcceptItem( acceptItem 	);
-		layout.setAcceptedItem( acceptedItem );
-		layout.setRefuseItem( refuseItem	);
-		layout.setPendingItem( pendingItem 	);
-		layout.setSeperatorItem( seperatorItem );
-
+		layout.setAcceptItem( new ItemStackBase(35, 0, (short) 5, _( "trade.items.accept" ), null) );
+		layout.setAcceptedItem( new ItemStackBase(35, 0, (short) 4, _( "trade.items.accepted" ), null ) );
+		layout.setRefuseItem( new ItemStackBase(35, 0, (short) 14, _( "trade.items.refuse" ), null )	);
+		layout.setPendingItem( new ItemStackBase(35, 0, (short) 8, _( "trade.items.pending" ), null ) );
+		layout.setSeperatorItem( new ItemStackBase(35, 0, (short) 8, null, null ) );
+		
 	}
 
-	public static ItemLayout createDefaultLayout( int rows ) {
+	public static ItemLayout createDefaultLayout(int rows) {
 
 		ItemLayout layout = new ItemLayout();
-		layout.setRows( rows );
+		layout.setRows(rows);
 
-		setActionSlots( layout );
-		setTradeSlots( layout );
-		setActionItems( layout );
+		setActionSlots(layout);
+		setTradeSlots(layout);
+		setActionItems(layout);
 
 		return layout;
 	}

@@ -3,18 +3,18 @@ package me.josvth.trade.managers;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
 import me.josvth.trade.Trade;
 import me.josvth.trade.layouts.CurrencyLayout;
 import me.josvth.trade.layouts.ItemLayout;
+import me.josvth.trade.layouts.ItemStackBase;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 public class LayoutManager {
 
@@ -174,19 +174,19 @@ public class LayoutManager {
 				plugin.getLogger().info( "(LM) Setting custom items.");
 			
 			// Accept item
-			layout.setAcceptItem( getItem( layoutSection, "action.accept", layout.getAcceptItem() ) );	
+			layout.setAcceptItem( getItemBase( layoutSection, "action.accept", layout.getAcceptItem() ) );	
 
 			// Accepted item
-			layout.setAcceptedItem( getItem( layoutSection, "action.accepted", layout.getAcceptedItem() ) );
+			layout.setAcceptedItem( getItemBase( layoutSection, "action.accepted", layout.getAcceptedItem() ) );
 
 			// Refuse item
-			layout.setRefuseItem( getItem( layoutSection, "action.refuse", layout.getRefuseItem() ) );
+			layout.setRefuseItem( getItemBase( layoutSection, "action.refuse", layout.getRefuseItem() ) );
 
 			// Pending item
-			layout.setPendingItem( getItem( layoutSection, "action.pending", layout.getPendingItem() ) );
+			layout.setPendingItem( getItemBase( layoutSection, "action.pending", layout.getPendingItem() ) );
 
 			// Separator item
-			layout.setSeperatorItem( getItem( layoutSection, "action.seperator", layout.getSeperatorItem() ) );
+			layout.setSeperatorItem( getItemBase( layoutSection, "action.seperator", layout.getSeperatorItem() ) );
 
 			if ( currency ) {
 				
@@ -194,14 +194,14 @@ public class LayoutManager {
 					plugin.getLogger().info( "(LM) Setting custom currency items.");
 								
 				// Currency change buttons
-				( (CurrencyLayout) layout ).setSmallChangeItem( getItem( layoutSection, "currency.change.small", ( (CurrencyLayout) layout ).getSmallChangeItem() ) );
-				( (CurrencyLayout) layout ).setMediumChangeItem( getItem( layoutSection, "currency.change.medium", ( (CurrencyLayout) layout ).getMediumChangeItem() ) );
-				( (CurrencyLayout) layout ).setLargeChangeItem( getItem( layoutSection, "currency.change.large", ( (CurrencyLayout) layout ).getLargeChangeItem() ) );
+				( (CurrencyLayout) layout ).setSmallChangeItem( getItemBase( layoutSection, "currency.change.small", ( (CurrencyLayout) layout ).getSmallChangeItem() ) );
+				( (CurrencyLayout) layout ).setMediumChangeItem( getItemBase( layoutSection, "currency.change.medium", ( (CurrencyLayout) layout ).getMediumChangeItem() ) );
+				( (CurrencyLayout) layout ).setLargeChangeItem( getItemBase( layoutSection, "currency.change.large", ( (CurrencyLayout) layout ).getLargeChangeItem() ) );
 
 				// Currency display buttons
-				( (CurrencyLayout) layout ).setSmallDisplayItem( getItem( layoutSection, "currency.display.small", ( (CurrencyLayout) layout ).getLargeDisplayItem() ) );
-				( (CurrencyLayout) layout ).setMediumDisplayItem( getItem( layoutSection, "currency.display.medium", ( (CurrencyLayout) layout ).getLargeDisplayItem() ) );
-				( (CurrencyLayout) layout ).setLargeDisplayItem( getItem( layoutSection, "currency.display.large", ( (CurrencyLayout) layout ).getLargeDisplayItem() ) );
+				( (CurrencyLayout) layout ).setSmallDisplayItem( getItemBase( layoutSection, "currency.display.small", ( (CurrencyLayout) layout ).getLargeDisplayItem() ) );
+				( (CurrencyLayout) layout ).setMediumDisplayItem( getItemBase( layoutSection, "currency.display.medium", ( (CurrencyLayout) layout ).getLargeDisplayItem() ) );
+				( (CurrencyLayout) layout ).setLargeDisplayItem( getItemBase( layoutSection, "currency.display.large", ( (CurrencyLayout) layout ).getLargeDisplayItem() ) );
 
 			}
 
@@ -256,7 +256,7 @@ public class LayoutManager {
 		
 	}
 	
-	private ItemStack getItem( ConfigurationSection layoutsection, String path, ItemStack def ) {
+	private ItemStackBase getItemBase( ConfigurationSection layoutsection, String path, ItemStackBase def ) {
 		
 		String itemPath = "items." + path;
 				
@@ -268,17 +268,15 @@ public class LayoutManager {
 		if ( configurationManager.debugMode ) 
 			plugin.getLogger().info( "(LM) Custom item at path: " + layoutsection.getCurrentPath() + "." + itemPath + " found." );
 		
-		int typeID 		=	itemSection.getInt( ".id", def.getTypeId() );		
-		int amount 		= 	itemSection.getInt(".amount", def.getAmount() );	
-		short data 		= 	(short) itemSection.getInt( ".data", def.getData().getData() );
-		String label	=	itemSection.getString( ".label", def.getItemMeta().getDisplayName() );
+		int typeID 			=	itemSection.getInt( ".id", def.getType() );		
+		int amount 			= 	itemSection.getInt(".amount", def.getAmount() );	
+		short data 			= 	(short) itemSection.getInt( ".data", def.getData() );
+		String label		=	itemSection.getString( ".label", def.getDisplayName() );
+		List<String> lore	=	itemSection.getStringList( ".lore" );
 		
-		ItemStack item = new ItemStack( typeID, amount, data );
-		ItemMeta meta = def.getItemMeta();
-		meta.setDisplayName( label );
-		item.setItemMeta( meta );
+		if(lore == null) lore = def.getLore();
 		
-		return item;
+		return new ItemStackBase(typeID, amount, data, label, lore);
 		
 	}
 	
