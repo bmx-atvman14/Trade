@@ -141,4 +141,8 @@ public class CurrencyExchange extends ItemExchange{
 		super.revertOffers();
 	}
 
+	public int getCurrencyOffers(Player player) {
+		return getInterface(player).getCurrency( Side.LEFT );
+	}
+
 }

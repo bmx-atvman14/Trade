@@ -9,6 +9,7 @@ import me.josvth.trade.managers.ConfigurationManager;
 import me.josvth.trade.managers.ExtensionManager;
 import me.josvth.trade.managers.LanguageManager;
 import me.josvth.trade.managers.LayoutManager;
+import me.josvth.trade.managers.LogManager;
 import me.josvth.trade.managers.RequestManager;
 
 import org.bukkit.command.CommandSender;
@@ -24,6 +25,7 @@ public class Trade extends JavaPlugin{
 	RequestManager			requestManager;
 	LayoutManager			layoutManager;
 	ExtensionManager 		extensionManager;
+	LogManager				logManager;
 	
 	TradeListener tradeListener;
 
@@ -38,6 +40,7 @@ public class Trade extends JavaPlugin{
 		requestManager			= new RequestManager( this );
 		extensionManager		= new ExtensionManager( this );
 		commandManager			= new CommandManager( this );
+		logManager				= new LogManager( this );
 		
 		configurationManager.initalize();
 		
@@ -50,7 +53,8 @@ public class Trade extends JavaPlugin{
 		languageManager.reload();
 		
 		extensionManager.initialize();
-						
+		logManager.initalize();
+		
 		tradeListener = new TradeListener(this);
 		
 	}
@@ -76,6 +80,10 @@ public class Trade extends JavaPlugin{
 		return languageManager;
 	}
 
+	public LogManager getLogManager(){
+		return logManager;
+	}
+	
 	public ExtensionManager getExtensionManager() {
 		return extensionManager;
 	}

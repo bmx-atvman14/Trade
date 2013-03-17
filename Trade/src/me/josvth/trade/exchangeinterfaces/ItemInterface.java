@@ -1,5 +1,9 @@
 package me.josvth.trade.exchangeinterfaces;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import me.josvth.trade.layouts.ItemLayout;
 
 import org.bukkit.Bukkit;
@@ -123,6 +127,15 @@ public class ItemInterface implements InventoryHolder {
 	// Replaces null items in an array by ItemStack(0,1)
 	public static void replaceNullItems(ItemStack[] items){
 		for ( int i = 0; i < items.length; i++ ) if( items[i] == null ) items[i] = new ItemStack(0, 1);
+	}
+	
+	public static ItemStack[] removeNullItems(ItemStack[] items) {
+		List<ItemStack> list = new ArrayList<ItemStack>();
+		
+		for( ItemStack item : items)
+			if(item != null) list.add(item);
+		
+		return list.toArray(new ItemStack[list.size()]);
 	}
 	
 	public enum Side {
